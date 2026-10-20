@@ -248,11 +248,11 @@ const ATTIRE = {
 
 // ── Website address (used for QR codes, link previews, table finder) ────────
 // NEXT_PUBLIC_SITE_URL (env) overrides this when set.
-const SITE_URL = "https://basha-debut-invitation.weddinginvitationrsvp.com/"
+const SITE_URL = "https://nanang-isings.vercel.app/"
 // Image shown when the link is shared (Facebook, Messenger, Viber, X, …).
 // Messenger is strict: use a JPG exactly 1200×630, under ~300 KB. When you replace it,
 // change the file name (or bump ?v=) so Facebook fetches the new one instead of its cache.
-const LINK_PREVIEW_IMAGE = "/Details/LinkPreview.jpg?v=2"
+const LINK_PREVIEW_IMAGE = "/Details/LinkPreview.png?v=2"
 const LINK_PREVIEW_IMAGE_SIZE = { width: 1200, height: 630, type: "image/jpeg" }
 
 // Site address with env override applied and no trailing slash — no need to edit
