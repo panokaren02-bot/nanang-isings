@@ -3007,31 +3007,32 @@
 
 /* ==========================================================================
    Envelope — realistic paper
-   Matte burgundy cardstock with soft natural shading and paper grain, a cast
-   shadow under the closed flap, and a two-sided flap whose back shows a
-   gold-lattice liner (also lining the inside once it opens).
+   Matte dusty-rose cardstock (pastel palette from the loading screen) with
+   soft natural shading and paper grain, a cast shadow under the closed flap,
+   and a two-sided flap whose back shows an ivory gold-lattice liner (also
+   lining the inside once it opens).
    ========================================================================== */
 .env-invite-envelope {
-  --env-highlight: #8d1b2c;
-  --env-base: #7a1526;
-  --env-fold: #66101f;
-  --env-shadow: #4c0a16;
-  --env-envelope: #7a1526;
-  --env-gold: #d9b56a;
+  --env-highlight: #f2cdd2;
+  --env-base: #e2adba;
+  --env-fold: #c99bb7;
+  --env-shadow: #a9788f;
+  --env-envelope: #e2adba;
+  --env-gold: #c9974a;
   --env-grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 0.9  0 0 0 0 0.85  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   --env-liner:
     radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--env-gold) 80%, transparent) 0 1.4px, transparent 1.9px) 0 0 / 22px 22px,
     radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--env-gold) 35%, transparent) 0 3.5px, transparent 4px) 11px 11px / 22px 22px,
     repeating-linear-gradient(45deg, color-mix(in srgb, var(--env-gold) 20%, transparent) 0 1px, transparent 1px 15.556px),
     repeating-linear-gradient(-45deg, color-mix(in srgb, var(--env-gold) 20%, transparent) 0 1px, transparent 1px 15.556px),
-    radial-gradient(ellipse at 50% 30%, #5a0714 0%, #33020a 100%);
+    radial-gradient(ellipse at 50% 30%, #fffaf3 0%, #f7e2dc 100%);
 }
 
 /* Matte front: gentle light from the top-left, no gloss */
 .env-invite-front-closed {
   background:
-    radial-gradient(ellipse 90% 70% at 25% 10%, rgba(255, 235, 225, 0.07) 0%, transparent 60%),
-    linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.16) 100%),
+    radial-gradient(ellipse 90% 70% at 25% 10%, rgba(255, 248, 244, 0.35) 0%, transparent 60%),
+    linear-gradient(180deg, transparent 55%, rgba(110, 50, 75, 0.12) 100%),
     linear-gradient(170deg, var(--env-highlight) 0%, var(--env-base) 45%, var(--env-fold) 100%);
 }
 .env-invite-front-closed::after {
@@ -3049,20 +3050,20 @@
 
 /* Side and bottom folds: subtle tonal steps like real overlapping paper */
 .env-invite-fold--bl {
-  background: linear-gradient(110deg, rgba(0, 0, 0, 0.1) 0%, rgba(255, 255, 255, 0.02) 70%);
+  background: linear-gradient(110deg, rgba(110, 50, 75, 0.1) 0%, rgba(255, 255, 255, 0.06) 70%);
 }
 .env-invite-fold--br {
-  background: linear-gradient(250deg, rgba(0, 0, 0, 0.1) 0%, rgba(255, 255, 255, 0.02) 70%);
+  background: linear-gradient(250deg, rgba(110, 50, 75, 0.1) 0%, rgba(255, 255, 255, 0.06) 70%);
 }
 .env-invite-fold--b {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.08) 0%, rgba(255, 255, 255, 0.03) 80%);
+  background: linear-gradient(0deg, rgba(110, 50, 75, 0.08) 0%, rgba(255, 255, 255, 0.08) 80%);
 }
 
 /* Fold creases: a soft shadow line instead of a gold one */
 .env-invite-envelope .env-invite-creases line,
 .env-invite-envelope .env-invite-creases line:nth-child(1),
 .env-invite-envelope .env-invite-creases line:nth-child(2) {
-  stroke: rgba(30, 0, 6, 0.35);
+  stroke: rgba(120, 60, 85, 0.28);
 }
 
 /* ---- Two-sided flap ----
@@ -3080,7 +3081,7 @@
    shadow is only applied while the flap is shut (idle / seal press). */
 .env-invite-screen[data-phase="idle"] .env-invite-flap,
 .env-invite-screen[data-phase="seal-press"] .env-invite-flap {
-  filter: drop-shadow(0 3px 2px rgba(25, 0, 5, 0.35)) drop-shadow(0 10px 14px rgba(25, 0, 5, 0.3));
+  filter: drop-shadow(0 3px 2px rgba(110, 50, 75, 0.22)) drop-shadow(0 10px 14px rgba(110, 50, 75, 0.18));
 }
 .env-invite-flap-shadow {
   display: none;
@@ -3101,8 +3102,8 @@
 }
 .env-invite-flap-face--outer::before {
   background:
-    radial-gradient(ellipse 70% 80% at 30% 0%, rgba(255, 235, 225, 0.08) 0%, transparent 60%),
-    linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.12) 100%),
+    radial-gradient(ellipse 70% 80% at 30% 0%, rgba(255, 248, 244, 0.4) 0%, transparent 60%),
+    linear-gradient(180deg, transparent 55%, rgba(110, 50, 75, 0.1) 100%),
     linear-gradient(165deg, var(--env-highlight) 0%, var(--env-base) 60%, var(--env-fold) 100%);
 }
 .env-invite-flap-face--outer::after {
@@ -3120,10 +3121,10 @@
 }
 .env-invite-flap-face--liner::before {
   background: var(--env-liner);
-  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 30px rgba(150, 90, 110, 0.3);
 }
 .env-invite-flap-face--liner::after {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.35), transparent 50%);
+  background: linear-gradient(0deg, rgba(110, 50, 75, 0.18), transparent 50%);
 }
 
 /* ---- Lined interior once the envelope opens ---- */
@@ -3133,7 +3134,7 @@
 .env-invite-screen[data-phase="revealed"] .env-invite-back,
 .env-invite-screen[data-phase="cta"] .env-invite-back {
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, transparent 35%),
+    linear-gradient(180deg, rgba(110, 50, 75, 0.25) 0%, transparent 35%),
     var(--env-liner);
 }
 
@@ -3410,4 +3411,11 @@
     gap: 0.45em;
     padding-top: 0.45em;
   }
+}
+
+/* "100" inside the script title: serif numerals, scaled down to sit on the script baseline */
+.env-invite-letter-title__num {
+  font-size: 0.62em;
+  letter-spacing: 0.02em;
+  margin-right: 0.04em;
 }

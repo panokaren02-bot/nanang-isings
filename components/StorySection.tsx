@@ -2,7 +2,7 @@
 
 import React from "react"
 import localFont from "next/font/local"
-import { Lora } from "next/font/google"
+import { Cinzel, Cormorant_Garamond, Playfair_Display } from "next/font/google"
 import { motion, useReducedMotion } from "motion/react"
 import { sectionType, storyChapterTitleSize } from "@/lib/section-typography"
 import Image from "next/image"
@@ -14,12 +14,27 @@ const theSeasons = localFont({
   variable: "--font-the-seasons",
 })
 
-// Upright, screen-friendly serif for chapter paragraphs on the pattern (easier to read than italic Goudy)
-const lora = Lora({
+// Pattern chapters (love-story-red.css): Playfair for titles + numerals, Cormorant for
+// paragraphs, Cinzel for the small "CHAPTER" caps — exposed as CSS variables
+const storyDisplay = Playfair_Display({
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["500", "600"],
   style: ["normal", "italic"],
   display: "swap",
+  variable: "--story-font-display",
+})
+const storyBody = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--story-font-body",
+})
+const storyCaps = Cinzel({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  display: "swap",
+  variable: "--story-font-caps",
 })
 
 const lightBg = "var(--color-welcome-bg)"
@@ -53,6 +68,33 @@ interface StorySectionProps {
   // "pattern": no solid band — the section's circle pattern shows through and the
   // text sits on an ivory (light) or wine-glass (dark) card (see love-story-red.css)
   surface?: "solid" | "pattern"
+}
+
+// Numbers and special characters (digits, commas, dashes, apostrophes, …) get their
+// own font style: digits → .story-num, punctuation → .story-special (love-story-red.css)
+export function StoryRichText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/(\d+|[^\p{L}\s]+)/u).map((part, i) => {
+        if (!part) return null
+        if (/^\d+$/.test(part)) {
+          return (
+            <span key={i} className="story-num">
+              {part}
+            </span>
+          )
+        }
+        if (i % 2 === 1) {
+          return (
+            <span key={i} className="story-special">
+              {part}
+            </span>
+          )
+        }
+        return part
+      })}
+    </>
+  )
 }
 
 // The Seasons (title face) lacks most punctuation — set any non-letter/number
@@ -193,7 +235,7 @@ export const StorySection: React.FC<StorySectionProps> = ({
 
   return (
     <div
-      className={`${theSeasons.variable} relative z-[2] ${sectionSurfaceClass}`}
+      className={`${theSeasons.variable} ${storyDisplay.variable} ${storyBody.variable} ${storyCaps.variable} relative z-[2] ${sectionSurfaceClass}`}
       style={plain || onPattern ? undefined : { background: isDark ? darkBg : lightBg }}
     >
       {plain && (
@@ -230,14 +272,15 @@ export const StorySection: React.FC<StorySectionProps> = ({
         <div
           className={
             showImage
-              ? `flex ${flexDirection} items-center justify-between ${onPattern ? "gap-4 sm:gap-6 md:gap-14" : "gap-3 md:gap-16"}`
+              ? // photo and text side by side on every screen, alternating sides
+                `flex ${flexDirection} items-center justify-between ${onPattern ? "gap-4 sm:gap-6 md:gap-14" : "gap-3 md:gap-16"}`
               : `mx-auto flex max-w-2xl flex-col items-center px-2 text-center sm:px-4 ${plainAlign}`
           }
         >
           {showImage && imageSrc && (
             <div className="flex w-[45%] shrink-0 justify-center md:w-5/12">
               <motion.div
-                className={`relative w-full md:max-w-md ${rotation}`}
+                className={`relative w-full md:max-w-sm ${rotation}`}
                 initial={imageInitial}
                 whileInView={imageInView}
                 viewport={{ once: true, amount: 0.25 }}
@@ -247,13 +290,14 @@ export const StorySection: React.FC<StorySectionProps> = ({
                   className={`w-full p-1.5 md:p-3${onPattern ? " story-pattern-frame" : ""}`}
                   style={onPattern ? undefined : imageFrameStyle}
                 >
-                  <div className="group relative aspect-[3/5] w-full overflow-hidden md:aspect-[5/7]">
+                  <div className="group relative aspect-[3/4] w-full overflow-hidden">
                     <Image
                       src={imageSrc}
-                      alt="Story moment"
+                      alt={title ? `${title} — chapter photo` : "Story moment"}
                       fill
                       sizes="(max-width: 768px) 45vw, (max-width: 1024px) 40vw, 33vw"
-                      className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                      // Portraits: keep faces in frame
+                      className="object-cover object-[50%_22%] transition-transform duration-1000 group-hover:scale-105"
                       quality={90}
                       priority={chapterIndex < 2}
                     />
@@ -328,27 +372,38 @@ export const StorySection: React.FC<StorySectionProps> = ({
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 1.3, delay: 0.15, ease: revealEase }}
             >
-              {title && (
-                <h2
-                  className={`${theSeasons.className} story-pattern-card__title mb-3 uppercase leading-tight tracking-[0.08em] sm:mb-4 sm:tracking-[0.1em] md:mb-6 md:tracking-[0.12em]`}
-                  style={{
-                    fontSize: storyChapterTitleSize,
-                    color: onPattern ? undefined : isDark ? lightBg : "var(--color-welcome-navy)",
-                  }}
-                >
-                  {onPattern && (
-                    <span className="story-pattern-card__label">
-                      {chapterLabelText} {chapterLabel}
-                    </span>
-                  )}
-                  <TitleText text={title} />
-                </h2>
+              {/* Chapter count: small caps word + large italic numeral */}
+              {onPattern && (
+                <p className="story-chapter-label" aria-label={`${chapterLabelText} ${chapterLabel}`}>
+                  <span className="story-chapter-label__word" aria-hidden>
+                    {chapterLabelText}
+                  </span>
+                  <span className="story-chapter-label__num" aria-hidden>
+                    {chapterLabel}
+                  </span>
+                </p>
               )}
+              {title &&
+                (onPattern ? (
+                  <h2 className="story-pattern-card__title">
+                    <StoryRichText text={title} />
+                  </h2>
+                ) : (
+                  <h2
+                    className={`${theSeasons.className} mb-3 uppercase leading-tight tracking-[0.08em] sm:mb-4 sm:tracking-[0.1em] md:mb-6 md:tracking-[0.12em]`}
+                    style={{
+                      fontSize: storyChapterTitleSize,
+                      color: isDark ? lightBg : "var(--color-welcome-navy)",
+                    }}
+                  >
+                    <TitleText text={title} />
+                  </h2>
+                ))}
               {onPattern && <span className="story-pattern-card__rule" aria-hidden />}
               <div
                 className={
                   onPattern
-                    ? `${lora.className} story-pattern-card__text space-y-3 sm:space-y-4 md:space-y-5`
+                    ? "story-pattern-card__text space-y-3 sm:space-y-4 md:space-y-5"
                     : `font-goudy-italic space-y-3 sm:space-y-4 md:space-y-6 lg:leading-[1.7] ${sectionType.textRelaxed}`
                 }
               >

@@ -8,9 +8,10 @@ import { useSiteConfig } from "@/hooks/use-site-config"
 import type { AttireColor } from "@/content/site"
 import Image from "next/image"
 import localFont from "next/font/local"
-import { Cinzel } from "next/font/google"
-import { Shirt, Copy, Check, Navigation, Heart, MapPin, Route, Landmark, Expand } from "lucide-react"
+import { Cinzel, Cormorant_Garamond, Playfair_Display } from "next/font/google"
+import { Shirt, Copy, Check, Navigation, Heart, MapPin } from "lucide-react"
 import { motion, useReducedMotion, type Variants } from "motion/react"
+import { PlainAtmosphere } from "@/components/loader/PlainAtmosphere"
 import { PlainBubbles } from "@/components/loader/PlainBubbles"
 import { RisingMotes } from "@/components/rising-motes"
 import "@/components/loader/loading-screen.css"
@@ -19,6 +20,20 @@ import "@/components/sections/love-story-red.css"
 const cinzel = Cinzel({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
+})
+
+// Headings: Playfair Display; body copy (.font-goudy-italic, see love-story-red.css →
+// .details-pastel): Cormorant Garamond — same faces as the story section
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
+})
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
+  variable: "--details-font-body",
 })
 
 const theSeasons = localFont({
@@ -33,9 +48,9 @@ const aboveTheBeyond = localFont({
   variable: "--font-above-beyond",
 })
 
-// Red velvet vibe (same as My Story + Gallery): white + gold text on the red circle
-// pattern; the venue / attire / reminder cards stay ivory paper with wine + gold ink.
-// Circle colors + blur: components/sections/love-story-red.css (.red-velvet-root); gold dust rises behind the content
+// Pastel, same as the hero / story / gallery: PlainAtmosphere + PlainBubbles backdrop,
+// plum text with a soft ivory glow; the venue / attire / reminder cards are ivory paper
+// with mauve + gold ink. Gold dust rises behind the content.
 const GOLD_INK = "color-mix(in srgb, var(--color-welcome-gold) 78%, var(--color-motif-deep))"
 const C = {
   heading: "var(--color-motif-deep)",
@@ -43,20 +58,17 @@ const C = {
   soft: "color-mix(in srgb, var(--color-welcome-text) 70%, var(--color-motif-deep))",
   label: GOLD_INK,
   script: GOLD_INK,
-  accent: "var(--color-motif-accent)",
+  accent: "#b46f86",
   green: "var(--color-motif-deep)",
   paper: "var(--color-motif-soft)",
   light: "var(--color-motif-soft)",
 } as const
 
-const sectionBg = "color-mix(in srgb, var(--color-motif-deep) 70%, var(--color-coastal-deep))"
+const textLift = "0 0 10px rgba(255, 249, 242, 0.95), 0 0 2px rgba(255, 249, 242, 0.9)"
 
-const textLift =
-  "0 1px 2px color-mix(in srgb, var(--color-coastal-deep) 60%, transparent), 0 2px 14px color-mix(in srgb, var(--color-coastal-deep) 45%, transparent)"
-
-// Text sitting directly on the red pattern: white, or gold for scripts / eyebrows
-const onBg = { color: "#fff", textShadow: textLift } as const
-const onBgGold = { color: "var(--color-welcome-gold)", textShadow: textLift } as const
+// Text sitting directly on the pastel pattern: plum, or dusty rose for eyebrows
+const onBg = { color: "#4f3646", textShadow: textLift } as const
+const onBgGold = { color: "#b46f86", textShadow: textLift } as const
 
 const hairline = "color-mix(in srgb, var(--color-welcome-gold) 50%, transparent)"
 
@@ -67,7 +79,7 @@ const cardStyle = {
   borderWidth: "1px",
   borderStyle: "solid",
   boxShadow:
-    "0 24px 50px -24px color-mix(in srgb, var(--color-coastal-deep) 75%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 35%, transparent)",
+    "0 24px 50px -24px color-mix(in srgb, var(--color-motif-deep) 45%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 35%, transparent)",
 } as const
 
 const softPanelStyle = {
@@ -87,7 +99,7 @@ function SectionIconDivider({ icon }: { icon: ReactNode }) {
         className="flex h-7 w-7 items-center justify-center rounded-full sm:h-8 sm:w-8"
         style={{
           border: "1px solid color-mix(in srgb, var(--color-welcome-gold) 60%, transparent)",
-          background: "var(--color-motif-deep)",
+          background: "var(--color-motif-soft)",
         }}
       >
         {icon}
@@ -112,15 +124,15 @@ function DetailsTitle({ title, subtitle }: { title: string; subtitle: string }) 
       }
     >
       <span
-        className={`${theSeasons.className} block uppercase leading-[0.78] tracking-[0.08em] min-[400px]:tracking-[0.11em] sm:tracking-[0.15em] md:tracking-[0.18em] pb-1 sm:pb-1.5`}
-        style={{ fontSize: "var(--title-size)", ...onBg }}
+        className={`${theSeasons.className} love-story-title-gold block uppercase leading-[1.1] tracking-[0.08em] min-[400px]:tracking-[0.11em] sm:tracking-[0.15em] md:tracking-[0.18em] pb-1 sm:pb-1.5`}
+        style={{ fontSize: "var(--title-size)" }}
       >
         {title}
       </span>
       <span
         aria-hidden
-        className={`${aboveTheBeyond.className} mx-auto block w-fit max-w-full px-1 leading-[0.88] sm:leading-[0.9] mt-2 sm:mt-2.5 md:mt-3`}
-        style={{ fontSize: "var(--script-size)", ...onBgGold }}
+        className={`${aboveTheBeyond.className} mx-auto block w-fit max-w-full px-2 pb-1 leading-[1.15] mt-2 sm:mt-2.5 md:mt-3`}
+        style={{ fontSize: "var(--script-size)", color: "var(--color-motif-deep)", textShadow: textLift }}
       >
         {subtitle}
       </span>
@@ -133,16 +145,15 @@ function DetailsTitle({ title, subtitle }: { title: string; subtitle: string }) 
 const ct = {
   label: "text-[11px] sm:text-xs md:text-sm",
   labelSm: "text-[10px] sm:text-[11px] md:text-xs",
-  body: "text-xs sm:text-sm md:text-base",
+  body: "text-sm sm:text-base md:text-lg",
   bodyLg: "text-sm sm:text-base md:text-lg",
   month: "text-base sm:text-xl md:text-2xl lg:text-3xl",
   dayNum: "text-2xl sm:text-4xl md:text-5xl lg:text-6xl",
   year: "text-base sm:text-xl md:text-2xl lg:text-3xl",
   sectionTitle: "text-sm sm:text-lg md:text-xl lg:text-2xl",
-  attireCardTitle: "text-sm sm:text-lg md:text-xl lg:text-2xl",
   btn: "text-xs sm:text-sm md:text-base",
   reminderHead: "text-[0.8rem] sm:text-sm md:text-base",
-  reminderBody: "text-xs sm:text-sm md:text-[0.95rem]",
+  reminderBody: "text-sm sm:text-base md:text-[1.05rem]",
 } as const
 
 type PaletteColor = { name: string; hex: string }
@@ -425,7 +436,7 @@ function AttireCard({
         {title ? (
           <div className="px-4 pt-6 pb-2 sm:px-5 sm:pt-8">
             <h4
-              className={`${cinzel.className} ${ct.attireCardTitle} text-center uppercase tracking-[0.22em] font-semibold leading-tight`}
+              className={`${playfair.className} text-[clamp(1.6rem,6.5vw,2.6rem)] text-center italic font-medium leading-tight`}
               style={{ color: C.heading }}
             >
               {title}
@@ -455,24 +466,6 @@ function AttireCard({
         </div>
       </div>
     </div>
-  )
-}
-
-// The Seasons has no clean glyphs for symbols / digits — render only those
-// characters (e.g. "&", ",", "-", numbers) in Cinzel, keep letters in The Seasons.
-function SpecialCharFont({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(/([^\p{L}\s]+)/u).map((part, i) =>
-        i % 2 === 1 ? (
-          <span key={i} className={`${cinzel.className} tracking-normal`}>
-            {part}
-          </span>
-        ) : (
-          part
-        ),
-      )}
-    </>
   )
 }
 
@@ -622,16 +615,16 @@ function EventVenueCard({
               {badge}
             </span>
             <h3
-              className={`${theSeasons.className} text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-1 sm:mb-1.5 drop-shadow-lg uppercase tracking-[0.12em] leading-tight`}
+              className={`${playfair.className} text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-1 sm:mb-1.5 drop-shadow-lg uppercase tracking-[0.12em] leading-tight`}
               style={{ color: C.light }}
             >
-              <SpecialCharFont text={locationName} />
+              {locationName}
             </h3>
             <p
-              className={`${theSeasons.className} text-[10px] sm:text-xs md:text-sm lg:text-base drop-shadow-md tracking-[0.06em] leading-snug`}
+              className={`${playfair.className} text-[10px] sm:text-xs md:text-sm lg:text-base drop-shadow-md tracking-[0.06em] leading-snug`}
               style={{ color: "var(--color-motif-silver)" }}
             >
-              <SpecialCharFont text={venueAddress} />
+              {venueAddress}
             </p>
           </div>
         </div>
@@ -700,13 +693,13 @@ function EventVenueCard({
                   {venueSectionLabel}
                 </p>
                 <p
-                  className={`${theSeasons.className} text-sm sm:text-base md:text-lg lg:text-xl font-semibold leading-snug tracking-[0.06em] uppercase`}
+                  className={`${playfair.className} text-sm sm:text-base md:text-lg lg:text-xl font-semibold leading-snug tracking-[0.06em] uppercase`}
                   style={{ color: C.heading }}
                 >
-                  <SpecialCharFont text={locationName} />
+                  {locationName}
                 </p>
-                <p className={`${theSeasons.className} ${ct.body} leading-relaxed mt-1 tracking-[0.04em]`} style={{ color: C.body }}>
-                  <SpecialCharFont text={venueAddress} />
+                <p className={`${playfair.className} ${ct.body} leading-relaxed mt-1 tracking-[0.04em]`} style={{ color: C.body }}>
+                  {venueAddress}
                 </p>
               </div>
               <div className="flex flex-col items-center gap-1.5 sm:gap-2 flex-shrink-0">
@@ -761,217 +754,10 @@ function EventVenueCard({
   )
 }
 
-type DirectionsImage = { src: string; alt: string; caption: string }
-
-type Directions = {
-  title: string
-  subtitle: string
-  steps: readonly string[]
-  landmarksLabel: string
-  landmarks: readonly string[]
-  address: string
-  mapImage?: DirectionsImage
-  streetImage?: DirectionsImage
-  enlargeHint?: string
-}
-
-// Framed photo that opens full size in a new tab (pinch-zoom on phones)
-function DirectionsFigure({
-  image,
-  width,
-  height,
-  sizes,
-  hint,
-  priority = false,
-}: {
-  image: DirectionsImage
-  width: number
-  height: number
-  sizes: string
-  hint?: string
-  priority?: boolean
-}) {
-  return (
-    <figure className="group/fig">
-      <a
-        href={image.src}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="relative block overflow-hidden rounded-xl sm:rounded-2xl"
-        style={{
-          padding: 4,
-          background: C.light,
-          boxShadow: `inset 0 0 0 1px ${hairline}, 0 16px 30px -18px color-mix(in srgb, var(--color-coastal-deep) 70%, transparent)`,
-        }}
-        aria-label={`${image.caption} — open full size`}
-      >
-        <div className="relative overflow-hidden rounded-[0.6rem] sm:rounded-xl">
-          <Image
-            src={image.src}
-            alt={image.alt}
-            width={width}
-            height={height}
-            sizes={sizes}
-            priority={priority}
-            className="h-auto w-full transition-transform duration-700 group-hover/fig:scale-[1.02]"
-          />
-          {hint ? (
-            <span
-              className={`${cinzel.className} absolute bottom-2 right-2 flex items-center gap-1 rounded-full px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.12em] backdrop-blur-sm sm:text-[0.65rem]`}
-              style={{
-                color: "#fff",
-                background: "color-mix(in srgb, var(--color-motif-deep) 72%, transparent)",
-                boxShadow: "inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 55%, transparent)",
-              }}
-            >
-              <Expand className="h-3 w-3" aria-hidden />
-              {hint}
-            </span>
-          ) : null}
-        </div>
-      </a>
-      <figcaption
-        className={`${cinzel.className} ${ct.labelSm} mt-2.5 text-center font-semibold uppercase tracking-[0.18em]`}
-        style={{ color: C.label }}
-      >
-        {image.caption}
-      </figcaption>
-    </figure>
-  )
-}
-
-function DirectionsCard({ directions }: { directions: Directions }) {
-  const { mapImage, streetImage, enlargeHint } = directions
-  return (
-    <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem]" style={cardStyle}>
-      <div className="p-5 sm:p-7 md:p-9">
-        <div className="text-center">
-          <span
-            className="mx-auto flex h-10 w-10 items-center justify-center rounded-full"
-            style={{ background: "linear-gradient(180deg, var(--color-motif-accent) 0%, var(--color-motif-deep) 100%)" }}
-            aria-hidden
-          >
-            <Route className="h-4.5 w-4.5" style={{ color: "var(--color-welcome-gold)" }} />
-          </span>
-          <h3
-            className={`${theSeasons.className} ${ct.sectionTitle} mt-3 font-semibold uppercase tracking-[0.16em]`}
-            style={{ color: C.heading }}
-          >
-            {directions.title}
-          </h3>
-          <p className={`font-goudy-italic ${ct.body} mt-1`} style={{ color: C.soft }}>
-            {directions.subtitle}
-          </p>
-          <FadeRule className="mt-4" />
-        </div>
-
-        {/* Illustrated route map — the whole way from the rotonda to the venue */}
-        {mapImage ? (
-          <div className="mx-auto mt-5 max-w-3xl sm:mt-6">
-            <DirectionsFigure
-              image={mapImage}
-              width={1408}
-              height={768}
-              sizes="(max-width: 768px) 92vw, 768px"
-              hint={enlargeHint}
-            />
-          </div>
-        ) : null}
-
-        {/* Steps beside the street-level photo (stacked on phones) */}
-        <div
-          className={`mx-auto mt-6 grid max-w-3xl items-center gap-6 sm:mt-8 ${
-            streetImage ? "md:grid-cols-[1fr_minmax(0,17rem)] md:gap-8" : ""
-          }`}
-        >
-          <ol className="relative">
-            {directions.steps.map((step, i) => {
-              const isLast = i === directions.steps.length - 1
-              return (
-                <li key={i} className="relative flex items-start gap-3 pb-5 last:pb-0 sm:gap-4">
-                  {/* Dotted gold line linking each step to the next */}
-                  {!isLast && (
-                    <span
-                      className="absolute left-[0.875rem] top-8 bottom-1 w-px sm:left-4 sm:top-9"
-                      style={{
-                        backgroundImage: "linear-gradient(to bottom, var(--color-welcome-gold) 50%, transparent 50%)",
-                        backgroundSize: "1px 6px",
-                      }}
-                      aria-hidden
-                    />
-                  )}
-                  <span
-                    className={`${cinzel.className} relative flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold sm:h-8 sm:w-8 sm:text-sm`}
-                    style={
-                      isLast
-                        ? {
-                            background: "linear-gradient(180deg, var(--color-motif-accent) 0%, var(--color-motif-deep) 100%)",
-                            color: "#fff",
-                            boxShadow: `inset 0 0 0 1px ${hairline}`,
-                          }
-                        : { background: C.light, color: C.accent, boxShadow: `inset 0 0 0 1px ${hairline}` }
-                    }
-                  >
-                    {isLast ? <MapPin className="h-3.5 w-3.5" aria-hidden /> : i + 1}
-                  </span>
-                  <p className={`font-goudy-italic ${ct.body} pt-0.5 leading-relaxed`} style={{ color: C.body }}>
-                    {step}
-                  </p>
-                </li>
-              )
-            })}
-          </ol>
-
-          {streetImage ? (
-            <div className="mx-auto w-full max-w-[17rem] sm:max-w-xs md:max-w-none">
-              <DirectionsFigure
-                image={streetImage}
-                width={992}
-                height={1081}
-                sizes="(max-width: 768px) 80vw, 272px"
-                hint={enlargeHint}
-              />
-            </div>
-          ) : null}
-        </div>
-
-        {directions.landmarks?.length > 0 && (
-          <div className="mx-auto mt-6 max-w-3xl rounded-2xl border p-4 sm:mt-8 sm:p-5" style={softPanelStyle}>
-            <p
-              className={`${cinzel.className} ${ct.label} flex items-center gap-1.5 font-semibold uppercase tracking-[0.18em]`}
-              style={{ color: C.label }}
-            >
-              <Landmark className="h-3.5 w-3.5" aria-hidden />
-              {directions.landmarksLabel}
-            </p>
-            <div className="mt-2.5 flex flex-wrap gap-2">
-              {directions.landmarks.map((place) => (
-                <span
-                  key={place}
-                  className={`${cinzel.className} rounded-full px-3 py-1 text-[0.68rem] font-semibold tracking-[0.06em] sm:text-xs`}
-                  style={{ background: C.light, color: C.heading, boxShadow: `inset 0 0 0 1px ${hairline}` }}
-                >
-                  {place}
-                </span>
-              ))}
-            </div>
-            <p className={`${theSeasons.className} ${ct.body} mt-3 flex items-start gap-1.5 tracking-[0.04em]`} style={{ color: C.body }}>
-              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" style={{ color: C.accent }} aria-hidden />
-              <span className="min-w-0">
-                <SpecialCharFont text={directions.address} />
-              </span>
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
 export function Details() {
   const siteConfig = useSiteConfig()
   const content = siteConfig.eventDetails
-  const { venues, labels, attire, reminders, directions } = content
+  const { venues, labels, attire, reminders } = content
   const { ceremony, reception } = siteConfig
 
   const [copiedItems, setCopiedItems] = useState<Set<string>>(new Set())
@@ -1044,10 +830,10 @@ export function Details() {
 
   return (
     <div
-      className={`red-velvet-root ${theSeasons.variable} ${aboveTheBeyond.variable} relative w-full overflow-hidden`}
-      style={{ background: sectionBg }}
+      className={`details-pastel ${theSeasons.variable} ${aboveTheBeyond.variable} ${cormorant.variable} relative w-full overflow-hidden`}
     >
-      {/* Red circle pattern (colors: components/sections/love-story-red.css) */}
+      {/* Same pastel backdrop as the home hero */}
+      <PlainAtmosphere baseColor="var(--color-welcome-bg)" />
       <PlainBubbles />
       <RisingMotes count={40} />
       <Section
@@ -1067,7 +853,7 @@ export function Details() {
             <DetailsTitle title={content.title} subtitle={content.subtitle} />
           </div>
           <p
-            className="font-goudy-italic mx-auto max-w-2xl px-2 text-[0.8rem] leading-[1.62] sm:text-[0.875rem] sm:leading-[1.65] md:text-[0.9375rem]"
+            className="font-goudy-italic mx-auto max-w-2xl px-2 text-[1rem] leading-[1.55] sm:text-[1.1rem] md:text-[1.2rem]"
             style={{ ...onBg, fontWeight: 600 }}
           >
             {content.description}
@@ -1156,10 +942,6 @@ export function Details() {
               labels={labels}
             />
           )}
-          {/* How to get there — route map, numbered steps, street photo and landmarks */}
-          {directions?.steps?.length ? (
-            <DirectionsCard directions={directions} />
-          ) : null}
         </div>
 
         {/* Attire Guidelines */}
@@ -1168,7 +950,7 @@ export function Details() {
           <div className="text-center mb-8 sm:mb-10 md:mb-12">
             <SectionIconDivider icon={<Shirt className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: "var(--color-welcome-gold)" }} aria-hidden />} />
             <h3
-              className={`${theSeasons.className} ${ct.sectionTitle} mt-3 uppercase font-semibold leading-tight tracking-[0.12em] sm:mt-4 md:tracking-[0.15em]`}
+              className={`${playfair.className} ${ct.sectionTitle} mt-3 uppercase font-semibold leading-tight tracking-[0.12em] sm:mt-4 md:tracking-[0.15em]`}
               style={onBg}
             >
               {attire.title}
@@ -1201,7 +983,7 @@ export function Details() {
                     ) : null
                   }
                 >
-                  <div className="grid grid-cols-1 gap-5 sm:gap-6">
+                  <div className={`grid grid-cols-1 gap-5 sm:gap-6 ${halves.length > 1 && !hasPalette ? "sm:grid-cols-2" : ""}`}>
                     {halves.map((half, i) => (
                       <Fragment key={half.label}>
                         {/* Palette sits between the two halves (or after the only one) */}
@@ -1247,7 +1029,7 @@ export function Details() {
                     />
                   ) : null}
                   <h3
-                    className={`${theSeasons.className} ${ct.sectionTitle} font-semibold uppercase tracking-[0.18em]`}
+                    className={`${playfair.className} ${ct.sectionTitle} font-semibold uppercase tracking-[0.18em]`}
                     style={{ color: C.heading }}
                   >
                     {reminders.title}

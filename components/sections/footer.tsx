@@ -20,24 +20,31 @@ import {
   ChevronRight,
 } from "lucide-react"
 import { useSiteConfig } from "@/hooks/use-site-config"
+import { PlainAtmosphere } from "@/components/loader/PlainAtmosphere"
 import { PlainBubbles } from "@/components/loader/PlainBubbles"
 import { RisingMotes } from "@/components/rising-motes"
 import "@/components/loader/loading-screen.css"
 import "@/components/sections/love-story-red.css"
 import { sectionType } from "@/lib/section-typography"
-import { Cinzel, Lora } from "next/font/google"
+import { Cinzel, Cormorant_Garamond, Playfair_Display } from "next/font/google"
 
 const cinzel = Cinzel({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
 })
 
-// Upright, screen-friendly serif for card text (same as the My Story paragraphs)
-const lora = Lora({
+// Card + fine-print text: Cormorant Garamond (same as the story / details sections)
+const bodySerif = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["500", "600"],
   style: ["normal", "italic"],
   display: "swap",
+})
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
 })
 
 const theSeasons = localFont({
@@ -52,16 +59,16 @@ const aboveTheBeyond = localFont({
   variable: "--font-above-beyond",
 })
 
-// Red velvet vibe (same as the sections above): white + gold text on the red circle
-// pattern; the cards are ivory paper with wine headings, gold labels and crimson → wine
-// buttons. Circle colors + blur: components/sections/love-story-red.css (.red-velvet-root); gold dust rises behind the content
-// TEAL keeps its template name but is now the wine ink used on the ivory cards.
+// Pastel (same as the sections above): plum text with an ivory glow on the pastel
+// bubbles; the cards are ivory paper with mauve headings, gold labels and dusty-rose →
+// mauve buttons. Gold dust rises behind the content.
+// TEAL keeps its template name but is now the mauve ink used on the ivory cards.
 const TEAL = "var(--color-motif-deep)"
 const BUTTON = "linear-gradient(180deg, var(--color-motif-accent) 0%, var(--color-motif-deep) 100%)"
 const BUTTON_HOVER =
   "linear-gradient(180deg, color-mix(in srgb, var(--color-motif-accent) 88%, black) 0%, color-mix(in srgb, var(--color-motif-deep) 85%, black) 100%)"
 const BUTTON_EDGE = "color-mix(in srgb, var(--color-welcome-gold) 60%, transparent)"
-const BUTTON_SHADOW = "0 10px 22px -12px color-mix(in srgb, var(--color-coastal-deep) 65%, transparent)"
+const BUTTON_SHADOW = "0 10px 22px -12px color-mix(in srgb, var(--color-motif-deep) 35%, transparent)"
 const IVORY = "var(--color-motif-soft)"
 const GOLD = "var(--color-welcome-gold)"
 const GOLD_INK = "color-mix(in srgb, var(--color-welcome-gold) 78%, var(--color-motif-deep))"
@@ -76,15 +83,13 @@ const palette = {
   accent: GOLD_INK,
 } as const
 
-const sectionBg = "color-mix(in srgb, var(--color-motif-deep) 70%, var(--color-coastal-deep))"
 
-const textLift =
-  "0 1px 2px color-mix(in srgb, var(--color-coastal-deep) 60%, transparent), 0 2px 14px color-mix(in srgb, var(--color-coastal-deep) 45%, transparent)"
+const textLift = "0 0 10px rgba(255, 249, 242, 0.95), 0 0 2px rgba(255, 249, 242, 0.9)"
 
-// Text sitting directly on the red pattern: white, gold for scripts, soft white for fine print
-const onBg = { color: "#fff", textShadow: textLift } as const
-const onBgGold = { color: GOLD, textShadow: textLift } as const
-const onBgSoft = { color: "color-mix(in srgb, white 82%, transparent)", textShadow: textLift } as const
+// Text sitting directly on the pastel pattern: plum, dusty rose for small caps, soft plum for fine print
+const onBg = { color: "#4f3646", textShadow: textLift } as const
+const onBgGold = { color: "#b46f86", textShadow: textLift } as const
+const onBgSoft = { color: "#7d5a6c", textShadow: textLift } as const
 
 const onBgLineStyle = {
   background: "linear-gradient(to right, transparent, var(--color-welcome-gold), transparent)",
@@ -96,8 +101,8 @@ const dividerLineStyle = {
 
 const ct = {
   label: sectionType.label,
-  body: sectionType.text,
-  bodyLg: sectionType.textRelaxed,
+  body: "text-[0.95rem] sm:text-[1.02rem]",
+  bodyLg: "text-[1.05rem] sm:text-[1.15rem]",
   cardTitle: sectionType.subheader,
 } as const
 
@@ -105,7 +110,7 @@ const cardStyle = {
   background:
     "radial-gradient(120% 45% at 50% 0%, color-mix(in srgb, white 70%, transparent) 0%, transparent 60%), linear-gradient(180deg, var(--color-motif-soft) 0%, var(--color-motif-cream) 100%)",
   boxShadow:
-    "0 30px 60px -28px color-mix(in srgb, var(--color-coastal-deep) 80%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 40%, transparent)",
+    "0 30px 60px -28px color-mix(in srgb, var(--color-motif-deep) 40%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 40%, transparent)",
 } as const
 
 type IconProps = { className?: string }
@@ -158,22 +163,6 @@ const rise: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
 }
 
-// The Seasons has no clean glyphs for "&" and digits — show those in Cinzel
-function SpecialCharFont({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(/([^\p{L}\s]+)/u).map((part, i) =>
-        i % 2 === 1 ? (
-          <span key={i} className={`${cinzel.className} tracking-normal`}>
-            {part}
-          </span>
-        ) : (
-          part
-        ),
-      )}
-    </>
-  )
-}
 
 function FooterCard({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
@@ -303,10 +292,10 @@ export function Footer() {
 
   return (
     <div
-      className={`red-velvet-root ${theSeasons.variable} ${aboveTheBeyond.variable} relative w-full overflow-hidden`}
-      style={{ background: sectionBg }}
+      className={`${theSeasons.variable} ${aboveTheBeyond.variable} relative w-full overflow-hidden`}
     >
-      {/* Red circle pattern (colors: components/sections/love-story-red.css) */}
+      {/* Same pastel backdrop as the home hero */}
+      <PlainAtmosphere baseColor="var(--color-welcome-bg)" />
       <PlainBubbles />
       <RisingMotes count={30} />
 
@@ -329,22 +318,22 @@ export function Footer() {
               loading="lazy"
               decoding="async"
               className="block h-28 w-28 select-none object-contain sm:h-36 sm:w-36 md:h-44 md:w-44"
-              style={{ filter: "brightness(0) invert(1) drop-shadow(0 4px 14px color-mix(in srgb, var(--color-coastal-deep) 55%, transparent))" }}
+              // Monogram tinted deep mauve (flatten to black, then shift to mauve), like the navbar
+              style={{ filter: "brightness(0) invert(42%) sepia(14%) saturate(1100%) hue-rotate(270deg) brightness(92%) drop-shadow(0 0 10px rgba(255, 249, 242, 0.9))" }}
             />
           ) : null}
 
           <motion.h2
             variants={rise}
-            className={`${theSeasons.className} mt-4 text-4xl uppercase tracking-[0.1em] sm:mt-5 sm:text-5xl md:text-6xl`}
-            style={onBg}
+            className={`${theSeasons.className} love-story-title-gold mt-4 pb-1 text-4xl leading-[1.15] tracking-[0.02em] sm:mt-5 sm:text-5xl md:text-6xl`}
           >
             {celebrant}
           </motion.h2>
           {content.nameLine ? (
             <motion.p
               variants={rise}
-              className={`${aboveTheBeyond.className} -mt-1 px-2 text-3xl sm:text-4xl`}
-              style={onBgGold}
+              className={`${aboveTheBeyond.className} mt-1 px-2 pb-1 text-3xl leading-[1.2] sm:text-4xl`}
+              style={{ color: "var(--color-motif-deep)", textShadow: textLift }}
             >
               {content.nameLine}
             </motion.p>
@@ -365,8 +354,8 @@ export function Footer() {
               {content.hashtags.map((tag) => (
                 <span
                   key={tag}
-                  className={`${lora.className} rounded-full border px-3.5 py-1 text-[0.8rem] font-semibold italic tracking-[0.02em] sm:text-[0.86rem]`}
-                  style={{ borderColor: HAIRLINE, color: GOLD, background: "color-mix(in srgb, var(--color-coastal-deep) 35%, transparent)" }}
+                  className={`${bodySerif.className} rounded-full border px-3.5 py-1 text-[0.8rem] font-semibold italic tracking-[0.02em] sm:text-[0.86rem]`}
+                  style={{ borderColor: HAIRLINE, color: "var(--color-motif-deep)", background: "color-mix(in srgb, var(--color-motif-soft) 80%, transparent)" }}
                 >
                   {tag}
                 </span>
@@ -392,7 +381,7 @@ export function Footer() {
                   <Label>{content.noteTitle}</Label>
                   <Heart className="h-3.5 w-3.5 shrink-0" style={{ color: palette.label, fill: palette.label }} aria-hidden />
                 </div>
-                <blockquote className={`${lora.className} relative ${ct.bodyLg} font-medium italic leading-[1.7]`}>
+                <blockquote className={`${bodySerif.className} relative ${ct.bodyLg} font-medium italic leading-[1.7]`}>
                   {/* Reserve height for the longest quote so the card doesn't jump */}
                   <span className="invisible block select-none" aria-hidden="true">
                     &ldquo;{longestQuote}&rdquo;
@@ -438,8 +427,8 @@ export function Footer() {
                   </span>
                   <div className="min-w-0">
                     <Label>{content.dateLabel}</Label>
-                    <p className={`${theSeasons.className} mt-1 text-lg tracking-[0.06em] sm:text-xl`} style={{ color: palette.heading }}>
-                      <SpecialCharFont text={ceremonyDate} />
+                    <p className={`${playfair.className} mt-1 text-lg italic sm:text-xl`} style={{ color: palette.heading }}>
+                      {ceremonyDate}
                     </p>
                   </div>
                 </div>
@@ -465,7 +454,7 @@ export function Footer() {
                             {label}
                           </p>
                           {place ? (
-                            <p className={`${lora.className} mt-0.5 flex items-start gap-1 text-[0.82rem] font-medium leading-snug`} style={{ color: palette.body }}>
+                            <p className={`${bodySerif.className} mt-0.5 flex items-start gap-1 text-[0.95rem] font-medium leading-snug`} style={{ color: palette.body }}>
                               <MapPin className="mt-[0.2em] h-3 w-3 shrink-0" style={{ color: palette.soft }} aria-hidden />
                               <span className="min-w-0">{place}</span>
                             </p>
@@ -497,19 +486,19 @@ export function Footer() {
                     {/* No deadline yet → plain "RSVP" heading + a gentle ask instead of an empty date */}
                     <Label>{siteConfig.details.rsvp.deadline ? content.rsvp.title : "RSVP"}</Label>
                     {siteConfig.details.rsvp.deadline ? (
-                      <p className={`${lora.className} mt-1 ${ct.body} font-medium`} style={{ color: palette.body }}>
+                      <p className={`${bodySerif.className} mt-1 ${ct.body} font-medium`} style={{ color: palette.body }}>
                         {content.rsvp.label}{" "}
                         <span className="font-semibold" style={{ color: palette.heading }}>
                           {siteConfig.details.rsvp.deadline}
                         </span>
                       </p>
                     ) : (
-                      <p className={`${lora.className} mt-1 ${ct.body} italic`} style={{ color: palette.soft }}>
+                      <p className={`${bodySerif.className} mt-1 ${ct.body} italic`} style={{ color: palette.soft }}>
                         Kindly let me know if you can join the celebration.
                       </p>
                     )}
                     {content.rsvp.note && siteConfig.details.rsvp.deadline ? (
-                      <p className={`${lora.className} mt-1 ${ct.body} italic`} style={{ color: palette.soft }}>
+                      <p className={`${bodySerif.className} mt-1 ${ct.body} italic`} style={{ color: palette.soft }}>
                         {content.rsvp.note}
                       </p>
                     ) : null}
@@ -538,7 +527,7 @@ export function Footer() {
                   <>
                     <Label>{content.followTitle}</Label>
                     {content.followNote ? (
-                      <p className={`${lora.className} mt-1 ${ct.body} italic`} style={{ color: palette.soft }}>
+                      <p className={`${bodySerif.className} mt-1 ${ct.body} italic`} style={{ color: palette.soft }}>
                         {content.followNote}
                       </p>
                     ) : null}
@@ -615,37 +604,37 @@ export function Footer() {
             <span className="mb-6 block h-px w-full sm:mb-8" style={onBgLineStyle} aria-hidden />
             <div className="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:gap-6 md:text-left">
               <div className="min-w-0">
-                <p className={`${lora.className} ${ct.body} font-medium`} style={onBg}>
+                <p className={`${bodySerif.className} ${ct.body} font-medium`} style={onBg}>
                   {fill(content.copyright)}
                 </p>
                 {content.tagline ? (
-                  <p className={`${lora.className} mt-1 ${ct.body} italic`} style={onBgSoft}>
+                  <p className={`${bodySerif.className} mt-1 ${ct.body} italic`} style={onBgSoft}>
                     {fill(content.tagline)}
                   </p>
                 ) : null}
               </div>
               {content.credit.show && (
                 <div className="min-w-0 space-y-1 md:text-right">
-                  <p className={`${lora.className} ${ct.body}`} style={onBgSoft}>
+                  <p className={`${bodySerif.className} ${ct.body}`} style={onBgSoft}>
                     {content.credit.developedBy}{" "}
                     <a
                       href={content.credit.developerUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-semibold underline decoration-[var(--color-welcome-gold)] underline-offset-2 hover:opacity-80"
-                      style={{ color: GOLD }}
+                      style={{ color: "var(--color-motif-deep)" }}
                     >
                       {content.credit.developerName}
                     </a>
                   </p>
-                  <p className={`${lora.className} ${ct.body}`} style={onBgSoft}>
+                  <p className={`${bodySerif.className} ${ct.body}`} style={onBgSoft}>
                     {content.credit.promoText}{" "}
                     <a
                       href={content.credit.promoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-semibold underline decoration-[var(--color-welcome-gold)] underline-offset-2 hover:opacity-80"
-                      style={{ color: GOLD }}
+                      style={{ color: "var(--color-motif-deep)" }}
                     >
                       {content.credit.promoName}
                     </a>

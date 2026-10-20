@@ -1,14 +1,13 @@
 /* ==========================================================================
-   Love Story — red velvet look (components/sections/love-story.tsx)
-   Red-majority circle pattern, crimson corner decorations, and chapter text
-   on ivory / wine-glass cards (StorySection surface="pattern").
-   Scoped to .love-story-root, .gallery-root (gallery section + /gallery page)
-   and .red-velvet-root (any other section, e.g. Event Details) so sections
-   without those classes keep their own palette.
+   Red velvet look — .gallery-root (gallery section + /gallery page) and
+   .red-velvet-root (any other section, e.g. Event Details): red-majority
+   circle pattern and crimson corner decorations.
+   The Love Story section (.love-story-root) uses the pastel hero backdrop
+   instead; its chapter cards (StorySection surface="pattern") are styled
+   at the bottom of this file.
    ========================================================================== */
 
 /* Luxury red velvet base: crimson glows over deep wine, darker at the edges */
-.love-story-root .plain-bubbles,
 .gallery-root .plain-bubbles,
 .red-velvet-root .plain-bubbles {
   background:
@@ -21,7 +20,6 @@
 
 /* Circles: each tone is a different depth of red, shaded like a velvet sphere
    (lit top-left, falling into shadow at the rim) so they read as volume */
-.love-story-root .plain-bubble,
 .gallery-root .plain-bubble,
 .red-velvet-root .plain-bubble {
   background: radial-gradient(
@@ -34,33 +32,24 @@
   box-shadow: 0 10px 30px color-mix(in srgb, var(--color-coastal-deep) 30%, transparent);
 }
 
-.love-story-root .plain-bubble--d,
 .gallery-root .plain-bubble--d,
 .red-velvet-root .plain-bubble--d { --red: #4a0710; --red-alpha: 0.85; } /* oxblood */
-.love-story-root .plain-bubble--m,
 .gallery-root .plain-bubble--m,
 .red-velvet-root .plain-bubble--m { --red: #7a0f1a; --red-alpha: 0.8; }  /* wine */
-.love-story-root .plain-bubble--l,
 .gallery-root .plain-bubble--l,
 .red-velvet-root .plain-bubble--l { --red: #a3172a; --red-alpha: 0.55; } /* crimson */
-.love-story-root .plain-bubble--c,
 .gallery-root .plain-bubble--c,
 .red-velvet-root .plain-bubble--c { --red: #8c1222; --red-alpha: 0.75; } /* garnet */
-.love-story-root .plain-bubble--p,
 .gallery-root .plain-bubble--p,
 .red-velvet-root .plain-bubble--p { --red: #c0283a; --red-alpha: 0.5; }  /* ruby */
-.love-story-root .plain-bubble--b,
 .gallery-root .plain-bubble--b,
 .red-velvet-root .plain-bubble--b { --red: #5e0b16; --red-alpha: 0.8; }  /* burgundy */
-.love-story-root .plain-bubble--r,
 .gallery-root .plain-bubble--r,
 .red-velvet-root .plain-bubble--r { --red: #b81d32; --red-alpha: 0.6; }  /* scarlet */
-.love-story-root .plain-bubble--k,
 .gallery-root .plain-bubble--k,
 .red-velvet-root .plain-bubble--k { --red: #d0425a; --red-alpha: 0.4; }  /* rose red */
 
 /* Corner decorations: crimson instead of antique gold, bright enough to read on wine */
-.love-story-root .invite-section-corner-img,
 .gallery-root .invite-section-corner-img,
 .gallery-root .red-corner-deco,
 .red-velvet-root .red-corner-deco {
@@ -68,65 +57,115 @@
     drop-shadow(0 2px 6px color-mix(in srgb, var(--color-coastal-deep) 45%, transparent));
 }
 
-/* ---- Chapters on the pattern ------------------------------------------- */
+/* ---- Chapters on the pastel pattern ------------------------------------ */
 
-/* No card: white text straight on the red velvet, lifted by a soft dark shadow */
+/* No card: text straight on the pastel pattern, lifted by a soft ivory glow.
+   Fonts come from StorySection: --story-font-display (Playfair Display),
+   --story-font-body (Cormorant Garamond), --story-font-caps (Cinzel). */
 .story-pattern-card {
+  --story-ink: #4f3646;
+  --story-title: #6e3350;
+  --story-rose: #b46f86;
+  --story-bronze: #a8702c;
   position: relative;
-  color: #fff;
+  color: var(--story-ink);
   text-shadow:
-    0 1px 2px color-mix(in srgb, var(--color-coastal-deep) 70%, transparent),
-    0 2px 14px color-mix(in srgb, var(--color-coastal-deep) 55%, transparent);
+    0 0 10px rgba(255, 249, 242, 0.95),
+    0 0 2px rgba(255, 249, 242, 0.9);
 }
 
-.story-pattern-card .story-pattern-card__title {
-  color: var(--color-welcome-gold);
+/* Chapter count: "CHAPTER" in small tracked caps + a large bronze italic numeral */
+.story-chapter-label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin: 0 0 0.35rem;
+  line-height: 1;
 }
-
-/* Chapter paragraphs: Lora, upright, comfortable size and line height */
-.story-pattern-card__text {
-  font-size: clamp(0.88rem, 3.4vw, 1.1rem);
+.story-chapter-label__word {
+  font-family: var(--story-font-caps), serif;
+  font-size: clamp(0.58rem, 2.3vw, 0.78rem);
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--story-rose);
+}
+.story-chapter-label__num {
+  font-family: var(--story-font-display), serif;
+  font-style: italic;
   font-weight: 500;
-  line-height: 1.7;
+  font-size: clamp(1.5rem, 6.4vw, 2.4rem);
+  font-variant-numeric: lining-nums;
+  color: var(--story-bronze);
+}
+
+/* Title: Playfair Display, mixed case */
+.story-pattern-card .story-pattern-card__title {
+  margin: 0 0 0.75rem;
+  font-family: var(--story-font-display), serif;
+  font-size: clamp(1.25rem, 5.4vw, 2.35rem);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: 0.005em;
+  color: var(--story-title);
+  text-wrap: balance;
+}
+
+/* Chapter paragraphs: Cormorant Garamond, generous size */
+.story-pattern-card__text {
+  font-family: var(--story-font-body), serif;
+  font-size: clamp(1rem, 4.1vw, 1.32rem);
+  font-weight: 500;
+  line-height: 1.55;
   letter-spacing: 0.005em;
 }
 
 @media (min-width: 768px) {
   .story-pattern-card__text {
-    font-size: 1.12rem;
-    line-height: 1.8;
+    font-size: 1.32rem;
+    line-height: 1.65;
+  }
+  .story-pattern-card .story-pattern-card__title {
+    margin-bottom: 1rem;
   }
 }
 
-/* The closing signature line ("With love and gratitude, …") stays a touch softer */
+/* The closing signature line ("With love and gratitude, …") */
 .story-pattern-card__text p + p {
   font-style: italic;
-  color: var(--color-motif-blush);
+  font-weight: 600;
+  color: var(--story-title);
 }
 
-/* "Chapter 01" above each title */
-.story-pattern-card__label {
-  display: block;
-  margin-bottom: 0.45em;
-  font-family: var(--font-cinzel, "Cinzel", serif);
-  font-size: 0.42em;
+/* Numbers and special characters get their own style (StoryRichText) */
+.story-pattern-card .story-num {
+  font-family: var(--story-font-display), serif;
+  font-style: italic;
   font-weight: 600;
-  letter-spacing: 0.28em;
-  color: var(--color-motif-blush);
+  font-size: 0.9em;
+  font-variant-numeric: lining-nums;
+  letter-spacing: 0.02em;
+  color: var(--story-bronze);
+}
+.story-pattern-card .story-special {
+  font-family: var(--story-font-display), serif;
+  font-style: normal;
+  font-size: 0.92em;
+  color: var(--story-rose);
 }
 
 /* Short gold rule between the title and the text */
 .story-pattern-card__rule {
   display: block;
-  width: 2.5rem;
+  width: 3rem;
   height: 1px;
-  margin: -0.25rem 0 0.9rem;
+  margin: 0 0 0.9rem;
   background: linear-gradient(90deg, var(--color-welcome-gold), transparent);
 }
 
 @media (min-width: 768px) {
   .story-pattern-card__rule {
-    margin: -0.75rem 0 1.25rem;
+    margin: 0 0 1.25rem;
   }
 }
 
@@ -135,8 +174,18 @@
   background: var(--color-motif-soft);
   border: 1px solid color-mix(in srgb, var(--color-welcome-gold) 55%, transparent);
   box-shadow:
-    0 18px 40px color-mix(in srgb, var(--color-coastal-deep) 45%, transparent),
-    0 4px 10px color-mix(in srgb, var(--color-coastal-deep) 20%, transparent);
+    0 22px 44px -16px color-mix(in srgb, var(--color-motif-deep) 40%, transparent),
+    0 4px 10px color-mix(in srgb, var(--color-motif-deep) 12%, transparent);
+}
+
+/* Section title: bronze gold like the home hero */
+.love-story-title-gold {
+  background: linear-gradient(180deg, #c99347 0%, #a8702c 32%, #7d4c1a 58%, #9a6326 80%, #c18a42 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9)) drop-shadow(0 0 10px rgba(255, 250, 244, 0.95));
 }
 
 /* ---- Gold dust rising behind section content (components/rising-motes.tsx) ----
@@ -186,8 +235,13 @@
 
 /* ---- Soft-focus background: the circle pattern is slightly blurred, like the
    loading screen's backdrop, so the chapters stand out in front of it ---- */
-.love-story-root .plain-bubble,
 .gallery-root .plain-bubble,
 .red-velvet-root .plain-bubble {
   filter: blur(6px);
+}
+
+/* ---- Event Details (.details-pastel): body copy in Cormorant Garamond ---- */
+.details-pastel .font-goudy-italic {
+  font-family: var(--details-font-body), Georgia, serif;
+  font-weight: 500;
 }

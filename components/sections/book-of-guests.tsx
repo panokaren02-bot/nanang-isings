@@ -4,10 +4,11 @@ import { useState, useEffect } from "react"
 import { RefreshCw, Users, Armchair, Crown } from "lucide-react"
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "motion/react"
 import localFont from "next/font/local"
-import { Cinzel } from "next/font/google"
+import { Cinzel, Cormorant_Garamond, Playfair_Display } from "next/font/google"
 import { useSiteConfig } from "@/hooks/use-site-config"
 import { layeredSectionTitleSize, sectionType } from "@/lib/section-typography"
 import { fetchInvitationList } from "@/lib/invitation-data"
+import { PlainAtmosphere } from "@/components/loader/PlainAtmosphere"
 import { PlainBubbles } from "@/components/loader/PlainBubbles"
 import { RisingMotes } from "@/components/rising-motes"
 import "@/components/loader/loading-screen.css"
@@ -18,22 +19,21 @@ const cinzel = Cinzel({
   weight: ["400", "600", "700"],
 })
 
-// The Seasons (demo) has no clean number glyphs — set any digits in Cinzel
-function DigitsInCinzel({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(/(\d+)/).map((part, i) =>
-        i % 2 === 1 ? (
-          <span key={i} className={`${cinzel.className} tracking-normal`}>
-            {part}
-          </span>
-        ) : (
-          part
-        ),
-      )}
-    </>
-  )
-}
+
+// Body copy (.font-goudy-italic → love-story-red.css .details-pastel) in Cormorant Garamond,
+// same as the story / details sections
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
+  variable: "--details-font-body",
+})
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
+})
 
 const theSeasons = localFont({
   src: "../../Font/Fontspring-DEMO-theseasons-reg.otf",
@@ -47,11 +47,10 @@ const aboveTheBeyond = localFont({
   variable: "--font-above-beyond",
 })
 
-// Red velvet vibe (same as My Story, Gallery, Event Details, Entourage): white + gold
-// text on the red circle pattern; the stats and guest cards are ivory paper with wine
-// names, gold labels and crimson → wine badges.
-// Circle colors + blur: components/sections/love-story-red.css (.red-velvet-root); gold dust rises behind the content
-// TEAL keeps its template name but is now the wine ink used on the ivory cards.
+// Pastel (same as the hero, story, gallery and details): plum text with an ivory glow on
+// the pastel bubbles; the stats and guest cards are ivory paper with mauve names, gold
+// labels and dusty-rose → mauve badges. Gold dust rises behind the content.
+// TEAL keeps its template name but is now the mauve ink used on the ivory cards.
 const TEAL = "var(--color-motif-deep)"
 const IVORY = "var(--color-motif-soft)"
 const PAPER = "var(--color-motif-soft)"
@@ -63,16 +62,14 @@ const ACCENT = GOLD_INK
 const HAIRLINE = "color-mix(in srgb, var(--color-welcome-gold) 45%, transparent)"
 const TEAL_SOFT = "color-mix(in srgb, var(--color-motif-deep) 60%, transparent)"
 const DEEP_GRADIENT = "linear-gradient(180deg, var(--color-motif-accent) 0%, var(--color-motif-deep) 100%)"
-const SAGE_GRADIENT = "linear-gradient(180deg, var(--color-motif-deep) 0%, color-mix(in srgb, var(--color-motif-deep) 70%, var(--color-coastal-deep)) 100%)"
+const SAGE_GRADIENT = "linear-gradient(180deg, #c48aa3 0%, var(--color-motif-deep) 100%)"
 
-const sectionBg = "color-mix(in srgb, var(--color-motif-deep) 70%, var(--color-coastal-deep))"
 
-const textLift =
-  "0 1px 2px color-mix(in srgb, var(--color-coastal-deep) 60%, transparent), 0 2px 14px color-mix(in srgb, var(--color-coastal-deep) 45%, transparent)"
+const textLift = "0 0 10px rgba(255, 249, 242, 0.95), 0 0 2px rgba(255, 249, 242, 0.9)"
 
-// Text sitting directly on the red pattern: white, or gold for scripts / eyebrows
-const onBg = { color: "#fff", textShadow: textLift } as const
-const onBgGold = { color: GOLD, textShadow: textLift } as const
+// Text sitting directly on the pastel pattern: white, or gold for scripts / eyebrows
+const onBg = { color: "#4f3646", textShadow: textLift } as const
+const onBgGold = { color: "#b46f86", textShadow: textLift } as const
 
 const palette = {
   body: BODY,
@@ -85,13 +82,13 @@ const cardStyle = {
   background:
     "radial-gradient(120% 50% at 50% 0%, color-mix(in srgb, white 70%, transparent) 0%, transparent 60%), linear-gradient(180deg, var(--color-motif-soft) 0%, var(--color-motif-cream) 100%)",
   boxShadow:
-    "0 24px 50px -24px color-mix(in srgb, var(--color-coastal-deep) 75%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 35%, transparent)",
+    "0 24px 50px -24px color-mix(in srgb, var(--color-motif-deep) 40%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 35%, transparent)",
 } as const
 
 const refreshButtonStyle = {
   borderColor: "color-mix(in srgb, var(--color-welcome-gold) 65%, transparent)",
   background: DEEP_GRADIENT,
-  boxShadow: "0 4px 14px -4px color-mix(in srgb, var(--color-coastal-deep) 55%, transparent)",
+  boxShadow: "0 4px 14px -4px color-mix(in srgb, var(--color-motif-deep) 30%, transparent)",
 } as const
 
 const chipPrimaryStyle = {
@@ -158,20 +155,18 @@ function BookOfGuestsTitle({ title, subtitle }: { title: string; subtitle: strin
       }
     >
       <span
-        className={`${theSeasons.className} block uppercase leading-[0.78] tracking-[0.08em] min-[400px]:tracking-[0.11em] sm:tracking-[0.13em] md:tracking-[0.14em] pb-1 sm:pb-1.5`}
-        style={{
-          fontSize: "var(--title-size)",
-          ...onBg,
-        }}
+        className={`${theSeasons.className} love-story-title-gold block uppercase leading-[1.1] tracking-[0.08em] min-[400px]:tracking-[0.11em] sm:tracking-[0.13em] md:tracking-[0.14em] pb-1 sm:pb-1.5`}
+        style={{ fontSize: "var(--title-size)" }}
       >
         {title}
       </span>
       <span
         aria-hidden
-        className={`${aboveTheBeyond.className} mx-auto block w-fit max-w-full px-1 leading-[0.88] sm:leading-[0.9] mt-2 sm:mt-2.5 md:mt-3`}
+        className={`${aboveTheBeyond.className} mx-auto block w-fit max-w-full px-2 pb-1 leading-[1.15] mt-2 sm:mt-2.5 md:mt-3`}
         style={{
           fontSize: "var(--script-size)",
-          ...onBgGold,
+          color: "var(--color-motif-deep)",
+          textShadow: textLift,
         }}
       >
         {subtitle}
@@ -342,10 +337,10 @@ export function BookOfGuests() {
   return (
     <div
       id="guests"
-      className={`red-velvet-root ${theSeasons.variable} ${aboveTheBeyond.variable} relative isolate z-10 overflow-hidden pt-12 pb-10 sm:pt-14 sm:pb-12 md:pt-16 md:pb-14 lg:pt-20 lg:pb-16`}
-      style={{ background: sectionBg }}
+      className={`details-pastel ${theSeasons.variable} ${aboveTheBeyond.variable} ${cormorant.variable} relative isolate z-10 overflow-hidden pt-12 pb-10 sm:pt-14 sm:pb-12 md:pt-16 md:pb-14 lg:pt-20 lg:pb-16`}
     >
-      {/* Red circle pattern (colors: components/sections/love-story-red.css) */}
+      {/* Same pastel backdrop as the home hero */}
+      <PlainAtmosphere baseColor="var(--color-welcome-bg)" />
       <PlainBubbles />
       <RisingMotes count={50} />
 
@@ -439,7 +434,7 @@ export function BookOfGuests() {
                     animate={{ opacity: 1, y: 0, scale: showIncrease ? 1.12 : 1 }}
                     exit={{ opacity: 0, y: -14 }}
                     transition={{ duration: 0.5, ease }}
-                    className={`${cinzel.className} text-4xl font-semibold tabular-nums leading-none tracking-[0.02em] sm:text-5xl md:text-6xl`}
+                    className={`${playfair.className} text-4xl font-medium italic tabular-nums leading-none sm:text-5xl md:text-6xl`}
                     style={{ color: palette.heading }}
                   >
                     {totalGuests}
@@ -545,7 +540,7 @@ export function BookOfGuests() {
                           className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full transition-transform duration-500 group-hover:scale-105 sm:h-12 sm:w-12"
                           style={{
                             background: SAGE_GRADIENT,
-                            boxShadow: `0 0 0 2px ${IVORY}, 0 0 0 3px ${HAIRLINE}, 0 6px 14px -6px color-mix(in srgb, var(--color-coastal-deep) 45%, transparent)`,
+                            boxShadow: `0 0 0 2px ${IVORY}, 0 0 0 3px ${HAIRLINE}, 0 6px 14px -6px color-mix(in srgb, var(--color-motif-deep) 25%, transparent)`,
                           }}
                         >
                           <span className={`${theSeasons.className} text-[1rem] tracking-[0.06em] sm:text-[1.08rem]`} style={{ color: IVORY }}>
@@ -556,11 +551,11 @@ export function BookOfGuests() {
                         <div className="min-w-0 flex-1">
                           <div className="flex min-w-0 items-center gap-1.5">
                             <h3
-                              className={`${theSeasons.className} min-w-0 truncate text-[0.98rem] uppercase leading-tight tracking-[0.07em] sm:text-[1.06rem]`}
+                              className={`${playfair.className} min-w-0 truncate text-[1.02rem] font-medium leading-tight sm:text-[1.1rem]`}
                               style={{ color: TEAL }}
                               title={guest.name}
                             >
-                              <DigitsInCinzel text={guest.name} />
+                              {guest.name}
                             </h3>
                             {guest.isVip && (
                               <span
@@ -697,7 +692,7 @@ export function BookOfGuests() {
                       className="h-1.5 rounded-full transition-all duration-500"
                       style={{
                         width: isActive ? "1.5rem" : "0.375rem",
-                        background: isActive ? GOLD : "color-mix(in srgb, white 40%, transparent)",
+                        background: isActive ? GOLD : "color-mix(in srgb, var(--color-motif-deep) 25%, transparent)",
                       }}
                     />
                   )

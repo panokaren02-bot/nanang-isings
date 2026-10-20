@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useState } from "react"
 import { motion } from "motion/react"
 import { useHydratedReducedMotion } from "@/hooks/use-hydrated-reduced-motion"
-import { Cinzel } from "next/font/google"
+import { Cinzel, Cormorant_Garamond } from "next/font/google"
 import localFont from "next/font/local"
-import { withRomanNumerals } from "@/components/title-numerals"
 import { useSiteConfig } from "@/hooks/use-site-config"
 import { parseWeddingDate } from "@/lib/wedding-date"
 import { InvitePhotoBackdrop } from "@/components/loader/invite-photo-backdrop"
@@ -19,6 +18,13 @@ import "./hero.css"
 const cinzel = Cinzel({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+})
+
+// Italic serif for the tagline line
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["italic"],
 })
 
 const theSeasons = localFont({
@@ -73,10 +79,14 @@ function HeroMotes({ layer }: { layer: "back" | "front" }) {
     </div>
   )
 }
+// Sized from the title's own width (cqi) so the full name always fits on one line
 const heroTitleSize = {
-  main: "clamp(3.6rem, min(19vw, 20cqi), 10rem)",
-  script: "clamp(2.2rem, min(10vw, 11.5cqi), 4.75rem)",
-  overlap: "clamp(-0.1rem, 1.2vw - 0.6rem, 0.9rem)", // grows with width: tiny tuck on phones, sits lower on desktop
+  // dvh caps keep the countdown band on screen on short desktop windows
+  main: "clamp(2.4rem, min(12.5vw, 12.5cqi, 11dvh), 6.5rem)",
+  script: "clamp(2.3rem, min(12vw, 12cqi, 10dvh), 5.5rem)",
+  // Pulls the script up by its top padding (0.55em, hero.css) plus a little more, so it
+  // tucks slightly under the name
+  overlap: "calc(var(--hero-script-size) * -0.6)",
 } as const
 
 interface TimeLeft {
@@ -265,8 +275,6 @@ export function Hero() {
   const isPlain = loading.display === "plain"
   const plainTheme =
     loading.plainTheme ?? defaultSiteConfig.loadingScreen.plainTheme
-  const cornerDecos =
-    loading.cornerDecos ?? defaultSiteConfig.loadingScreen.cornerDecos
   const backgroundPhotos = loading.backgroundPhotos ?? []
   const hero = siteConfig.hero ?? defaultSiteConfig.hero
   const fill = (text: string) => fillCelebrant(text, siteConfig)
@@ -293,6 +301,8 @@ export function Hero() {
   )
   const ceremonyName =
     siteConfig.ceremony.location || siteConfig.wedding.venue
+  const venueCity = loading.gala?.venueCity ?? defaultSiteConfig.loadingScreen.gala.venueCity
+  const fullName = siteConfig.celebrant?.fullName ?? defaultSiteConfig.celebrant.fullName
 
   const fadeUp = (delay: number) => {
     if (reduceMotion) {
@@ -314,23 +324,6 @@ export function Hero() {
         <>
           <PlainAtmosphere baseColor={plainTheme.background} />
           <PlainBubbles />
-          <div className="home-hero-plain-corners" aria-hidden="true">
-            {(
-              [
-                { src: cornerDecos.topLeft, className: "left-0 top-0" },
-                { src: cornerDecos.topRight, className: "right-0 top-0" },
-                { src: cornerDecos.bottomLeft, className: "left-0 bottom-0" },
-                { src: cornerDecos.bottomRight, className: "right-0 bottom-0" },
-              ] as const
-            ).map(({ src, className }) => (
-              <img
-                key={src}
-                src={src}
-                alt=""
-                className={`home-hero-plain-corner-img absolute ${className}`}
-              />
-            ))}
-          </div>
         </>
       ) : (
         <>
@@ -349,7 +342,7 @@ export function Hero() {
 
       {!reduceMotion && <HeroMotes layer="back" />}
 
-      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-5 pb-6 pt-[clamp(4.25rem,12vw,7rem)] text-center sm:px-8">
+      <div className="home-hero-content relative z-10 mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center px-5 pb-4 pt-[clamp(4.25rem,min(12vw,11dvh),6.5rem)] text-center sm:px-8">
         <motion.h1
           className="relative mx-auto w-full max-w-full @container text-center"
           style={
@@ -376,43 +369,76 @@ export function Hero() {
           <span className="sr-only">{fill(hero.srTitle)}</span>
           <span
             aria-hidden
-            className={`${theSeasons.className} home-hero-title-main relative block whitespace-nowrap uppercase leading-[0.82] tracking-[0.03em] min-[400px]:tracking-[0.05em] sm:tracking-[0.07em] md:tracking-[0.08em]`}
+            className={`${theSeasons.className} home-hero-title-main relative block whitespace-nowrap leading-[1.2] tracking-[0.01em]`}
             style={{ fontSize: "var(--hero-title-size)" }}
           >
             {fill(hero.titleMain)}
           </span>
           <span
             aria-hidden
-            className={`${aboveTheBeyond.className} home-hero-title-script relative z-10 mx-auto block w-fit max-w-full px-1 leading-[0.82] sm:leading-[0.84]`}
+            className={`${aboveTheBeyond.className} home-hero-title-script relative z-10 mx-auto block w-fit max-w-full whitespace-nowrap leading-[1.15]`}
             style={{
               marginTop: "var(--hero-script-overlap)",
               fontSize: "var(--hero-script-size)",
             }}
           >
-            {withRomanNumerals(fill(hero.titleScript), theSeasons.className)}
+            {/* Digits ("100") in the serif — the script font's numerals read poorly */}
+            {fill(hero.titleScript).split(/(\d+)/).filter(Boolean).map((part, i) =>
+              /^\d+$/.test(part) ? (
+                <span key={i} className={`${theSeasons.className} home-hero-title-num`}>
+                  {part}
+                </span>
+              ) : (
+                part
+              ),
+            )}
           </span>
         </motion.h1>
 
+        {/* Celebrant's full name between two short gold rules */}
+        {fullName && (
+          <motion.p
+            className={`${cinzel.className} home-hero-fullname mt-[clamp(1.1rem,min(5.5vw,3.6dvh),2.4rem)] flex items-center justify-center gap-3 text-[clamp(0.8rem,3.6vw,1.2rem)] font-semibold uppercase tracking-[0.2em] sm:gap-4`}
+            {...fadeUp(0.16)}
+          >
+            <span className="home-hero-rule" aria-hidden />
+            <span className="whitespace-nowrap">{fullName}</span>
+            <span className="home-hero-rule home-hero-rule--end" aria-hidden />
+          </motion.p>
+        )}
+
         <motion.p
-          className={`${cinzel.className} home-hero-eyebrow mt-[clamp(1.6rem,6vw,3rem)] max-w-[22rem] text-[clamp(0.68rem,2.8vw,0.86rem)] font-medium uppercase leading-[1.7] tracking-[0.18em] [text-wrap:balance] sm:max-w-none sm:tracking-[0.22em]`}
-          {...fadeUp(0.2)}
+          className={`${cormorant.className} home-hero-tagline mt-[clamp(0.6rem,2.6vw,1rem)] text-[clamp(1.05rem,4.4vw,1.45rem)] font-medium italic leading-snug [text-wrap:balance]`}
+          {...fadeUp(0.22)}
         >
           {fill(hero.eyebrow)}
         </motion.p>
 
         <motion.p
-          className={`${theSeasons.className} home-hero-date mt-4 text-[clamp(1.85rem,8.5vw,3.65rem)] font-normal leading-none tracking-[0.08em] sm:mt-5`}
+          className={`${theSeasons.className} home-hero-date mt-[clamp(1.1rem,min(5.5vw,3.4dvh),2.25rem)] text-[clamp(2rem,min(9vw,6.5dvh),3.4rem)] font-normal leading-none tracking-[0.08em]`}
           {...fadeUp(0.28)}
         >
           {numericDate}
         </motion.p>
 
-        <motion.p
-          className={`${cinzel.className} home-hero-meta mt-4 text-[0.62rem] font-medium uppercase tracking-[0.18em] sm:text-[0.7rem] sm:tracking-[0.2em]`}
+        <motion.div
+          className={`${cinzel.className} home-hero-meta mt-[clamp(0.8rem,min(4vw,2.4dvh),1.5rem)] flex flex-col items-center gap-1.5 leading-relaxed text-[clamp(0.68rem,2.9vw,0.82rem)] font-semibold uppercase tracking-[0.18em] sm:tracking-[0.22em]`}
           {...fadeUp(0.36)}
         >
-          {ceremonyName} · {ceremonyTimePhrase}
-        </motion.p>
+          {/* Phones: city drops to its own line; wider screens keep one line with a dot */}
+          <span>
+            {ceremonyName}
+            {venueCity && (
+              <>
+                <span className="hidden sm:inline"> · </span>
+                <span className="block sm:inline">{venueCity}</span>
+              </>
+            )}
+          </span>
+          <span className="home-hero-meta-soft">
+            {parsedDate.dayOfWeek} · {ceremonyTimePhrase}
+          </span>
+        </motion.div>
       </div>
 
       <motion.div className="home-hero-countdown-bar relative z-10 mt-auto w-full" {...fadeUp(0.42)}>

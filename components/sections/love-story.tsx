@@ -4,10 +4,11 @@ import { celebrantName } from "@/lib/celebrant"
 import React, { useMemo } from "react"
 import localFont from "next/font/local"
 import { motion, useReducedMotion } from "motion/react"
-import { StorySection } from "@/components/StorySection"
+import { StoryRichText, StorySection } from "@/components/StorySection"
 import { layeredSectionTitleSize, sectionType } from "@/lib/section-typography"
 import { useSiteConfig } from "@/hooks/use-site-config"
 import { siteConfig as defaultSiteConfig } from "@/content/site"
+import { PlainAtmosphere } from "@/components/loader/PlainAtmosphere"
 import { PlainBubbles } from "@/components/loader/PlainBubbles"
 import { RisingMotes } from "@/components/rising-motes"
 import "@/components/loader/loading-screen.css"
@@ -27,13 +28,10 @@ const aboveTheBeyond = localFont({
 
 const revealEase = [0.22, 1, 0.36, 1] as const
 
-// Section background: deep wine under a red circle pattern (PlainBubbles, recolored in love-story-red.css)
-const sectionBg = "color-mix(in srgb, var(--color-motif-deep) 70%, var(--color-coastal-deep))"
-
-// Dark lift so light text stays readable over the red circles
-const onBgGlow =
-  "0 1px 2px color-mix(in srgb, var(--color-coastal-deep) 60%, transparent), 0 2px 14px color-mix(in srgb, var(--color-coastal-deep) 45%, transparent)"
-const WHITE = "#fff"
+// Same pastel backdrop as the home hero (PlainAtmosphere + PlainBubbles); text uses
+// plum ink with a soft ivory glow so it reads over the bubbles (love-story-red.css)
+const onBgGlow = "0 0 10px rgba(255, 249, 242, 0.95), 0 0 2px rgba(255, 249, 242, 0.9)"
+const INK = "var(--color-welcome-text)"
 const GOLD = "var(--color-welcome-gold)"
 
 function formatStoryParagraph(paragraph: string, celebrant: string): string {
@@ -74,21 +72,17 @@ function LoveStoryTitle({
       }
     >
       <span
-        className={`${theSeasons.className} block pb-1 uppercase leading-[0.78] tracking-[0.08em] min-[400px]:tracking-[0.11em] sm:tracking-[0.13em] md:tracking-[0.14em]`}
-        style={{
-          fontSize: "var(--title-size)",
-          color: WHITE,
-          textShadow: onBgGlow,
-        }}
+        className={`${theSeasons.className} love-story-title-gold block pb-1 uppercase leading-[1.1] tracking-[0.08em] min-[400px]:tracking-[0.11em] sm:tracking-[0.13em] md:tracking-[0.14em]`}
+        style={{ fontSize: "var(--title-size)" }}
       >
         {title}
       </span>
       <span
         aria-hidden
-        className={`${aboveTheBeyond.className} mx-auto mt-2 block w-fit max-w-full px-1 leading-[0.88] sm:mt-2.5 sm:leading-[0.9] md:mt-3`}
+        className={`${aboveTheBeyond.className} mx-auto mt-2 block w-fit max-w-full px-2 pb-2 leading-[1.15] sm:mt-2.5 md:mt-3`}
         style={{
           fontSize: "var(--script-size)",
-          color: GOLD,
+          color: "var(--color-motif-deep)",
           textShadow: onBgGlow,
         }}
       >
@@ -109,7 +103,7 @@ function chapterTextFromParagraphs(paragraphs: readonly string[], celebrant: str
             paragraphs.length > 1 && index < paragraphs.length - 1 ? "mb-4" : undefined
           }
         >
-          {formatStoryParagraph(paragraph, celebrant)}
+          <StoryRichText text={formatStoryParagraph(paragraph, celebrant)} />
         </p>
       ))}
     </>
@@ -120,7 +114,7 @@ export function LoveStory() {
   const siteConfig = useSiteConfig()
   const loading = siteConfig.loadingScreen ?? defaultSiteConfig.loadingScreen
   const loveStory = siteConfig.loveStory ?? defaultSiteConfig.loveStory
-  const isPlain = loading.display === "plain"
+  const plainTheme = loading.plainTheme ?? defaultSiteConfig.loadingScreen.plainTheme
   const reduceMotion = useReducedMotion()
 
   const celebrant = celebrantName(siteConfig)
@@ -129,16 +123,14 @@ export function LoveStory() {
     () => loveStory.chapters ?? defaultSiteConfig.loveStory.chapters,
     [loveStory.chapters],
   )
-  const eucalyptusDecos =
-    loveStory.eucalyptusDecos ?? defaultSiteConfig.loveStory.eucalyptusDecos
 
   return (
     <div
       id="love-story"
-      className={`love-story-root ${theSeasons.variable} ${aboveTheBeyond.variable} relative min-h-screen w-full overflow-x-hidden`}
-      style={{ background: sectionBg }}
+      className={`love-story-root love-story-pastel ${theSeasons.variable} ${aboveTheBeyond.variable} relative min-h-screen w-full overflow-x-hidden`}
     >
-      {/* Same circle pattern as the other sections, softly blurred (love-story-red.css) */}
+      {/* Same pastel backdrop as the home hero */}
+      <PlainAtmosphere baseColor={plainTheme.background} />
       <PlainBubbles />
       <RisingMotes count={110} />
 
@@ -165,13 +157,13 @@ export function LoveStory() {
           layout={chapter.layout}
           imageSrc={chapter.image}
           text={chapterTextFromParagraphs(chapter.paragraphs, celebrant)}
-          plain={isPlain}
+          // Photo chapters in every display mode; a chapter without an image shows text only
+          plain={false}
           chapterIndex={index}
           isFirst={index === 0}
           isLast={index === chapters.length - 1}
-          eucalyptusDecos={isPlain ? eucalyptusDecos : undefined}
           chapterLabelText={loveStory.chapterLabel}
-          surface={isPlain ? "solid" : "pattern"}
+          surface="pattern"
         />
       ))}
 
@@ -189,7 +181,7 @@ export function LoveStory() {
           <blockquote className="mt-5 sm:mt-6">
             <p
               className={`font-goudy-italic ${sectionType.textRelaxed} italic leading-relaxed`}
-              style={{ color: WHITE, textShadow: onBgGlow }}
+              style={{ color: INK, textShadow: onBgGlow }}
             >
               &ldquo;{loveStory.closingQuote}&rdquo;
             </p>
@@ -200,14 +192,6 @@ export function LoveStory() {
               — {loveStory.closingCitation}
             </footer>
           </blockquote>
-          {isPlain && eucalyptusDecos.sectionBottom ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={eucalyptusDecos.sectionBottom}
-              alt=""
-              className="love-story-footer-euc mx-auto mt-8 sm:mt-10"
-            />
-          ) : null}
         </motion.div>
       </footer>
     </div>

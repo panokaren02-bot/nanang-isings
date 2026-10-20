@@ -3,13 +3,13 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import { createPortal } from "react-dom"
 import Image from "next/image"
-import Link from "next/link"
 import localFont from "next/font/local"
 import { X, ChevronLeft, ChevronRight, Camera } from "lucide-react"
-import { Cinzel } from "next/font/google"
+import { Cinzel, Cormorant_Garamond } from "next/font/google"
 import { Section } from "@/components/section"
 import { sectionType } from "@/lib/section-typography"
 import { useSiteConfig } from "@/hooks/use-site-config"
+import { PlainAtmosphere } from "@/components/loader/PlainAtmosphere"
 import { PlainBubbles } from "@/components/loader/PlainBubbles"
 import { RisingMotes } from "@/components/rising-motes"
 import "@/components/loader/loading-screen.css"
@@ -18,6 +18,13 @@ import "@/components/sections/love-story-red.css"
 const cinzel = Cinzel({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
+})
+
+// Italic serif for the description + footnote (same body face as the story chapters)
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["italic"],
 })
 
 const theSeasons = localFont({
@@ -32,24 +39,20 @@ const aboveTheBeyond = localFont({
   variable: "--font-above-beyond",
 })
 
-// Red velvet vibe, same as My Story and /gallery: white + gold text on a blurred red
-// circle pattern (colors + blur: components/sections/love-story-red.css). No decorations.
+// Pastel, same as the home hero and the story section: PlainAtmosphere + PlainBubbles
+// backdrop, bronze-gold title, mauve script, plum text lifted by a soft ivory glow.
 const C = {
-  title: "#fff",
-  script: "var(--color-welcome-gold)",
-  eyebrow: "var(--color-welcome-gold)",
-  body: "#fff",
-  soft: "var(--color-motif-blush)",
+  script: "var(--color-motif-deep)",
+  eyebrow: "#b46f86",
+  body: "#4f3646",
+  soft: "var(--color-motif-deep)",
   accent: "var(--color-welcome-gold)",
   deep: "var(--color-motif-deep)",
-  paper: "var(--color-motif-deep)",
+  paper: "var(--color-motif-soft)",
   light: "var(--color-motif-soft)",
 } as const
 
-const sectionBg = "color-mix(in srgb, var(--color-motif-deep) 70%, var(--color-coastal-deep))"
-
-const textLift =
-  "0 1px 2px color-mix(in srgb, var(--color-coastal-deep) 60%, transparent), 0 2px 14px color-mix(in srgb, var(--color-coastal-deep) 45%, transparent)"
+const textLift = "0 0 10px rgba(255, 249, 242, 0.95), 0 0 2px rgba(255, 249, 242, 0.9)"
 
 const lineRight = {
   background: "linear-gradient(to right, transparent, var(--color-welcome-gold))",
@@ -58,13 +61,16 @@ const lineLeft = {
   background: "linear-gradient(to left, transparent, var(--color-welcome-gold))",
 } as const
 
-// Photos sit bare on the pattern — no mat, border or inner line; just a soft drop shadow
+// Ivory mat with a gold hairline, like the story photos, and a soft plum shadow
 const frameStyle: React.CSSProperties = {
-  boxShadow: "0 16px 32px -14px color-mix(in srgb, var(--color-coastal-deep) 70%, transparent)",
+  padding: "5px",
+  background: "var(--color-motif-soft)",
+  border: "1px solid color-mix(in srgb, var(--color-welcome-gold) 55%, transparent)",
+  boxShadow: "0 18px 36px -16px color-mix(in srgb, var(--color-motif-deep) 45%, transparent)",
 }
 
 const badgeStyle: React.CSSProperties = {
-  backgroundColor: "color-mix(in srgb, var(--color-coastal-deep) 60%, transparent)",
+  backgroundColor: "color-mix(in srgb, var(--color-motif-deep) 70%, transparent)",
   color: C.light,
 }
 
@@ -99,14 +105,14 @@ function GalleryTitle({ title, subtitle }: { title: string; subtitle: string }) 
       <span className="sr-only">{title} — {subtitle}</span>
       <span
         aria-hidden
-        className={`${theSeasons.className} block uppercase leading-[0.9] tracking-[0.04em] min-[400px]:tracking-[0.08em] sm:tracking-[0.12em] md:tracking-[0.14em]`}
-        style={{ fontSize: "var(--title-size)", color: C.title, textShadow: textLift }}
+        className={`${theSeasons.className} love-story-title-gold block pb-1 uppercase leading-[1.1] tracking-[0.04em] min-[400px]:tracking-[0.08em] sm:tracking-[0.12em] md:tracking-[0.14em]`}
+        style={{ fontSize: "var(--title-size)" }}
       >
         {title}
       </span>
       <span
         aria-hidden
-        className={`${aboveTheBeyond.className} relative z-10 mx-auto mt-1.5 block w-fit max-w-full px-1 leading-[0.88] sm:mt-2 sm:leading-[0.9]`}
+        className={`${aboveTheBeyond.className} relative z-10 mx-auto mt-1.5 block w-fit max-w-full px-2 pb-1 leading-[1.15] sm:mt-2`}
         style={{
           fontSize: "var(--script-size)",
           color: C.script,
@@ -124,8 +130,9 @@ type GalleryItem = { image: string; text: string }
 export function Gallery() {
   const { gallery } = useSiteConfig()
   const galleryItems: GalleryItem[] = gallery.images
-  // Desktop mosaic: 1 featured (fills 4 cells) + 8 tiles = 12 cells → whole rows at 3 or 4 columns
-  const DESKTOP_TILES = 9
+  // Desktop mosaic (4 columns): 1 featured (fills 4 cells) + 4 tiles = 8 cells → two whole rows;
+  // with more photos the 9th tile becomes a "+N more" tile
+  const DESKTOP_TILES = galleryItems.length <= 5 ? galleryItems.length : 9
   const desktopItems = galleryItems.slice(0, DESKTOP_TILES)
   const hiddenCount = galleryItems.length - desktopItems.length
 
@@ -237,10 +244,10 @@ export function Gallery() {
 
   return (
     <div
-      className={`gallery-root ${theSeasons.variable} ${aboveTheBeyond.variable} relative w-full overflow-hidden`}
-      style={{ background: sectionBg }}
+      className={`gallery-pastel ${theSeasons.variable} ${aboveTheBeyond.variable} relative w-full overflow-hidden`}
     >
-      {/* Red circle pattern, softly blurred, with gold dust rising behind the photos */}
+      {/* Same pastel backdrop as the home hero, with gold dust rising behind the photos */}
+      <PlainAtmosphere baseColor="var(--color-welcome-bg)" />
       <PlainBubbles />
       <RisingMotes count={36} />
       <Section
@@ -261,7 +268,7 @@ export function Gallery() {
           <GalleryTitle title={gallery.title} subtitle={gallery.subtitle} />
         </div>
         <p
-          className={`font-goudy-italic mx-auto mt-4 max-w-xl px-2 sm:mt-5 md:mt-6 ${sectionType.textRelaxed}`}
+          className={`${cormorant.className} mx-auto mt-4 max-w-xl px-2 text-[clamp(1.05rem,4.2vw,1.35rem)] font-medium italic leading-snug sm:mt-5 md:mt-6`}
           style={{ color: C.body, textShadow: textLift }}
         >
           {gallery.description}
@@ -309,24 +316,24 @@ export function Gallery() {
                   <button
                     key={item.image + index}
                     type="button"
-                    className="group relative snap-center shrink-0 w-[78%] rounded-lg transition-transform duration-300 active:scale-[0.98]"
+                    className="group relative snap-center shrink-0 w-[78%] rounded-xl transition-transform duration-300 active:scale-[0.98]"
                     style={frameStyle}
                     onPointerDown={handleThumbPointerDown}
                     onPointerMove={handleThumbPointerMove}
                     onClick={() => openLightbox(item, index)}
                     aria-label={`Open image ${index + 1}`}
                   >
-                    <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
+                    <div className="relative aspect-[3/4] overflow-hidden rounded-lg">
                       <Image
                         src={item.image}
                         alt={item.text || `Gallery image ${index + 1}`}
                         fill
                         sizes="78vw"
-                        className="object-cover"
+                        className="object-cover object-[50%_22%]"
                       />
                     </div>
 
-                    <div className="absolute top-2 right-2 rounded-full px-2 py-0.5 backdrop-blur-sm" style={badgeStyle}>
+                    <div className="absolute top-3 right-3 rounded-full px-2 py-0.5 backdrop-blur-sm" style={badgeStyle}>
                       <span className="text-[11px] font-medium tracking-wider">
                         {index + 1}/{galleryItems.length}
                       </span>
@@ -346,7 +353,7 @@ export function Gallery() {
             {/* Tablet/Desktop: curated mosaic — one featured portrait (2×2) beside a tidy
                 grid that always fills whole rows (3 cols on tablet, 4 on desktop). The
                 last tile shows how many more photos open in the lightbox. */}
-            <div className="hidden sm:grid grid-cols-3 gap-3 md:gap-4 lg:grid-cols-4 lg:gap-5">
+            <div className="hidden sm:grid grid-cols-4 gap-3 md:gap-4 lg:gap-5">
               {desktopItems.map((item, index) => {
                 const featured = index === 0
                 const isMoreTile = index === desktopItems.length - 1 && hiddenCount > 0
@@ -354,20 +361,20 @@ export function Gallery() {
                   <button
                     key={item.image + index}
                     type="button"
-                    className={`group relative w-full overflow-hidden rounded-xl text-left transition-transform duration-500 ease-out hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-welcome-gold)] ${featured ? "col-span-2 row-span-2" : ""}`}
+                    className={`group relative w-full rounded-xl text-left transition-transform duration-500 ease-out hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-welcome-gold)] ${featured ? "col-span-2 row-span-2" : ""}`}
                     style={frameStyle}
                     onPointerDown={handleThumbPointerDown}
                     onPointerMove={handleThumbPointerMove}
                     onClick={() => openLightbox(item, index)}
                     aria-label={isMoreTile ? `Open image ${index + 1} — ${hiddenCount} more photos` : `Open image ${index + 1}`}
                   >
-                    <div className={`relative overflow-hidden ${featured ? "h-full" : "aspect-[3/4]"}`}>
+                    <div className={`relative overflow-hidden rounded-lg ${featured ? "h-full" : "aspect-[3/4]"}`}>
                       <Image
                         src={item.image}
                         alt={item.text || `Gallery image ${index + 1}`}
                         fill
                         sizes={featured ? "(max-width: 1024px) 66vw, 560px" : "(max-width: 1024px) 33vw, 280px"}
-                        className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                        className="object-cover object-[50%_22%] transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
                       />
                       {/* Soft wine wash on hover */}
                       <div
@@ -420,23 +427,8 @@ export function Gallery() {
               })}
             </div>
 
-            <div className="mt-10 flex justify-center sm:mt-12 md:mt-14">
-              <Link
-                href={gallery.buttonHref}
-                className={`${cinzel.className} inline-flex items-center justify-center rounded-full border px-8 py-3 text-[0.625rem] font-semibold uppercase tracking-[0.18em] transition-all duration-300 hover:scale-[1.03] hover:brightness-110 active:scale-[0.98] sm:text-[0.6875rem] sm:tracking-[0.22em]`}
-                style={{
-                  background: "linear-gradient(180deg, var(--color-motif-accent) 0%, var(--color-motif-deep) 100%)",
-                  borderColor: "color-mix(in srgb, var(--color-welcome-gold) 70%, transparent)",
-                  color: "#fff",
-                  boxShadow: "0 12px 26px -10px color-mix(in srgb, var(--color-coastal-deep) 70%, transparent)",
-                }}
-              >
-                {gallery.buttonText}
-              </Link>
-            </div>
-
             <p
-              className={`font-goudy-italic mx-auto mt-6 max-w-lg px-2 text-center leading-relaxed sm:mt-8 ${sectionType.textRelaxed}`}
+              className={`${cormorant.className} mx-auto mt-8 max-w-lg px-2 text-center text-[clamp(0.98rem,3.8vw,1.2rem)] font-medium italic leading-relaxed sm:mt-10`}
               style={{ color: C.soft, textShadow: textLift }}
             >
               {gallery.footnote}

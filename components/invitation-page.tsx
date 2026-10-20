@@ -280,7 +280,7 @@ export function InvitationPage({ sponsorsList, showEntourage = true }: Invitatio
               <Messages />
               {/* <MessageVideo /> */}
               <Details />
-              <WeddingTimeline />
+              {/* <WeddingTimeline /> */}
               {showEntourage && siteConfig.entourage.show !== false && <Entourage sponsorsList={sponsorsList} />}
               <GuestList />
               <BookOfGuests />

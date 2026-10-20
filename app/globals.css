@@ -69,25 +69,25 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  /* Primary: oxblood red #7A0F1A */
-  --primary: #7A0F1A;
-  --primary-foreground: #FBF9F4;
-  /* Secondary: antique gold #C9A24A */
-  --secondary: #C9A24A;
-  --secondary-foreground: #141012;
+  /* Primary: deep mauve #8E6483 (mauvePink, deepened for contrast) */
+  --primary: #8E6483;
+  --primary-foreground: #FFF9F0;
+  /* Secondary: champagne gold #E8BD70 */
+  --secondary: #E8BD70;
+  --secondary-foreground: #4A3445;
   /* Legacy "sage" token — mapped to gold */
-  --sage: #C9A24A;
-  /* Muted/light surfaces: pearl ivory #F4F1EB */
-  --muted: #F4F1EB;
-  --muted-foreground: #141012;
-  /* Accent: antique gold #C9A24A */
-  --accent: #C9A24A;
-  --accent-foreground: #141012;
+  --sage: #E8BD70;
+  /* Muted/light surfaces: champagne cream #FBE9DF */
+  --muted: #FBE9DF;
+  --muted-foreground: #4A3445;
+  /* Accent: dusty rose #DDA6B4 */
+  --accent: #DDA6B4;
+  --accent-foreground: #4A3445;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: #C9A24A;
+  --border: #F2C7C5;
+  --input: #F2C7C5;
+  --ring: #DDA6B4;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -96,22 +96,22 @@
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #7A0F1A;
-  --sidebar-primary-foreground: #FBF9F4;
-  --sidebar-accent: #C9A24A;
-  --sidebar-accent-foreground: #141012;
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: #C9A24A;
+  --sidebar-primary: #8E6483;
+  --sidebar-primary-foreground: #FFF9F0;
+  --sidebar-accent: #DDA6B4;
+  --sidebar-accent-foreground: #4A3445;
+  --sidebar-border: #F2C7C5;
+  --sidebar-ring: #DDA6B4;
 
   /* Decoration tint: the botanical PNGs in /public/deco are painted in sage.
      grayscale + sepia flattens them, then saturate/hue-rotate/brightness land
      them on antique gold (--color-welcome-gold) while keeping the shading.
      Set to "none" to show the original artwork. */
-  --deco-filter: grayscale(1) sepia(1) saturate(2.1) hue-rotate(-6deg) brightness(0.86) contrast(1.08);
+  --deco-filter: grayscale(1) sepia(1) saturate(1.8) hue-rotate(-6deg) brightness(1.02) contrast(1.02);
 
   /* Moving "Silk" backdrop behind the main sections (WebGL — any CSS color).
-     Read at runtime by components/invitation-page.tsx. Deep wine velvet. */
-  --color-silk: #3A0B12;
+     Read at runtime by components/invitation-page.tsx. Soft mauve silk. */
+  --color-silk: #C99BB7;
 
   /* QR codes (every QR on the site + dashboard): darkest motif color on white.
      Read at runtime by hooks/use-css-color, so any CSS color works here. */
@@ -126,20 +126,20 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: #7A0F1A;
+  --primary: #8E6483;
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: #C9A24A;
+  --secondary: #E8BD70;
   --secondary-foreground: oklch(0.145 0 0);
-  --sage: #C9A24A;
-  --muted: #F4F1EB;
+  --sage: #E8BD70;
+  --muted: #FBE9DF;
   --muted-foreground: oklch(0.145 0 0);
-  --accent: #C9A24A;
+  --accent: #DDA6B4;
   --accent-foreground: oklch(0.145 0 0);
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
-  --ring: #C9A24A;
+  --ring: #DDA6B4;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -147,12 +147,12 @@
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: #7A0F1A;
+  --sidebar-primary: #8E6483;
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: #C9A24A;
+  --sidebar-accent: #DDA6B4;
   --sidebar-accent-foreground: oklch(0.145 0 0);
   --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: #C9A24A;
+  --sidebar-ring: #DDA6B4;
 }
 
 @theme inline {
@@ -163,46 +163,48 @@
 /* ==========================================
    MOTIF COLORS — DEBUT
 
-   Theme: Luxury Fashion Gala
-   Motif: Baroque Sun / Moon, Pearls, Red Roses
-   Colors: Burgundy, Black, Champagne Gold, Silver
+   Theme: Pastel Romance
+   Colors: Champagne Cream, Blush Pink, Dusty Rose,
+           Mauve Pink, Champagne Gold, Ivory White
+   Deep plum/mauve inks are derived from mauvePink
+   so text stays readable on the pastel surfaces.
 ========================================== */
 
 /* ------------------------------------------
-   Background / Paper — pearl & silver
+   Background / Paper — cream & ivory
 ------------------------------------------ */
 
---color-motif-cream: #F5EFE5;
---color-motif-yellow: #E3D2AA;
---color-motif-soft: #FCFAF6;
+--color-motif-cream: #FBE9DF;   /* champagneCream */
+--color-motif-yellow: #F1D3A0;  /* soft champagne gold */
+--color-motif-soft: #FFF9F0;    /* ivoryWhite */
 
 /* ------------------------------------------
-   Red Rose Accents
+   Rose Accents
 ------------------------------------------ */
 
---color-motif-accent: #A51C35;
---color-motif-deep: #5D0B1A;
---color-motif-medium: #C9A45C;
+--color-motif-accent: #DDA6B4;  /* dustyRose */
+--color-motif-deep: #8E6483;    /* deep mauve */
+--color-motif-medium: #E8BD70;  /* champagneGold */
 
 /* ------------------------------------------
-   Black / Silver (main ink)
+   Plum / Mauve (main ink)
 ------------------------------------------ */
 
---color-motif-teal: #171316;
---color-motif-teal-medium: #4C4246;
---color-motif-teal-light: #C8C9CE;
+--color-motif-teal: #4A3445;
+--color-motif-teal-medium: #7A6070;
+--color-motif-teal-light: #C99BB7; /* mauvePink */
 
 /* ------------------------------------------
-   Gold / Pearl accent
+   Blush accent
 ------------------------------------------ */
 
---color-motif-blush: #E8D9B5;
+--color-motif-blush: #F2C7C5;   /* blushPink */
 
 /* ------------------------------------------
    Neutral / Paper
 ------------------------------------------ */
 
---color-motif-silver: #E5E5E8;
+--color-motif-silver: #F6DCD6;
 
 /* ==========================================
    WELCOME SECTION
@@ -226,75 +228,75 @@
    TYPOGRAPHY
 ========================================== */
 
-/* Main body text — luxury black */
---color-welcome-text: #171316;
+/* Main body text — deep plum */
+--color-welcome-text: #4A3445;
 
 /* Secondary / softer text */
 --color-welcome-text-soft:
     color-mix(
         in srgb,
-        #171316 62%,
+        #4A3445 70%,
         white
     );
 
-/* Small headings — deep burgundy */
---color-welcome-heading: #5D0B1A;
+/* Small headings — deep mauve */
+--color-welcome-heading: #8E6483;
 
-/* Script / romantic accent — rose red */
---color-welcome-script: #A51C35;
+/* Script / romantic accent — deepened dusty rose */
+--color-welcome-script: #B97C93;
 
-/* Main hero heading — deepest black */
---color-welcome-navy: #100D0F;
+/* Main hero heading — darkest plum */
+--color-welcome-navy: #3E2B3A;
 
 /* ==========================================
    BUTTONS / DECORATION
 ========================================== */
 
 /* Buttons */
---color-welcome-green: #5D0B1A;
+--color-welcome-green: #8E6483;
 
 /* Decorative lines */
---color-welcome-botanical: #92713A;
+--color-welcome-botanical: #C99BB7;
 
 /* Gold decorative details */
---color-welcome-gold: #C9A45C;
+--color-welcome-gold: #E8BD70;
 
-/* Pale gold accents */
---color-welcome-blush: #E8D9B5;
+/* Blush accents */
+--color-welcome-blush: #F2C7C5;
 
 /* ==========================================
    ADDITIONAL PALETTE (legacy names)
 ========================================== */
 
-/* Deepest black */
---color-coastal-deep: #100D0F;
+/* Darkest plum */
+--color-coastal-deep: #3E2B3A;
 
-/* Regal black */
---color-coastal-teal: #171316;
+/* Deep plum */
+--color-coastal-teal: #4A3445;
 
-/* Smoke charcoal */
---color-coastal-soft: #4C4246;
+/* Soft plum */
+--color-coastal-soft: #7A6070;
 
-/* Silver */
---color-coastal-light: #C8C9CE;
+/* Mauve pink */
+--color-coastal-light: #C99BB7;
 
-/* Rose red */
---color-romantic-coral: #A51C35;
+/* Dusty rose */
+--color-romantic-coral: #DDA6B4;
 
-/* Deep burgundy */
---color-romantic-deep: #5D0B1A;
+/* Deep mauve */
+--color-romantic-deep: #8E6483;
 
 /* Champagne gold */
---color-romantic-peach: #C9A45C;
+--color-romantic-peach: #E8BD70;
 
-/* Pale gold */
---color-romantic-blush: #E8D9B5;
+/* Blush pink */
+--color-romantic-blush: #F2C7C5;
 
-/* Silver champagne */
---color-coastal-sand: #DED6C9;
+/* Blush sand */
+--color-coastal-sand: #F2D8CF;
 
-/* Pearl ivory */
---color-coastal-ivory: #F5EFE5;
+/* Champagne cream */
+--color-coastal-ivory: #FBE9DF;
 
 /* ==========================================
    CELEBRANT NAME LOCKUP
@@ -345,7 +347,7 @@
 ========================================== */
 
 /* Solid at the very bottom, fading to transparent upward */
---color-countdown-fade: var(--color-coastal-deep);
+--color-countdown-fade: var(--color-motif-deep);
 
 /* Numbers + heading on the faded band */
 --color-countdown-text: var(--color-motif-soft);
@@ -354,42 +356,42 @@
 --color-countdown-label: var(--color-welcome-gold);
 
 /* ==========================================
-   ENVELOPE — LUXURY RED FAMILY
+   ENVELOPE — DUSTY ROSE FAMILY
 ========================================== */
 
 /* Main paper */
 --color-envelope-paper:
     color-mix(
         in srgb,
-        var(--color-motif-deep) 88%,
-        var(--color-coastal-deep)
+        var(--color-motif-accent) 85%,
+        var(--color-coastal-light)
     );
 
 /* Back panel / inside */
---color-envelope-base: var(--color-motif-deep);
+--color-envelope-base: var(--color-coastal-light);
 
 /* Lit edges */
 --color-envelope-highlight:
     color-mix(
         in srgb,
-        var(--color-motif-accent) 88%,
-        var(--color-welcome-gold)
+        var(--color-motif-blush) 80%,
+        var(--color-motif-soft)
     );
 
 /* Flap folds */
 --color-envelope-fold:
     color-mix(
         in srgb,
-        var(--color-motif-deep) 72%,
-        var(--color-coastal-deep)
+        var(--color-motif-accent) 70%,
+        var(--color-coastal-light)
     );
 
 /* Shadows */
 --color-envelope-shadow:
     color-mix(
         in srgb,
-        var(--color-motif-deep) 45%,
-        var(--color-coastal-deep)
+        var(--color-coastal-light) 60%,
+        var(--color-motif-deep)
     );
 
 /* Crease hairlines on the paper — gold */
@@ -400,40 +402,40 @@
 ========================================== */
 
 /* Primary CTA */
---color-primary: #5D0B1A;
+--color-primary: #8E6483;
 
 /* Primary CTA hover */
---color-primary-hover: #3F0712;
+--color-primary-hover: #6F4C66;
 
 /* Romantic CTA */
---color-romantic: #A51C35;
+--color-romantic: #B97C93;
 
 /* Romantic hover */
---color-romantic-hover: #5D0B1A;
+--color-romantic-hover: #8E6483;
 
 /* Soft highlight */
---color-highlight: #E8D9B5;
+--color-highlight: #F2C7C5;
 
 /* Section accent */
---color-section-accent: #C9A45C;
+--color-section-accent: #E8BD70;
 
 /* Light section */
---color-section-light: #C8C9CE;
+--color-section-light: #C99BB7;
 
 /* Card background */
---color-card: #FCFAF6;
+--color-card: #FFF9F0;
 
 /* Border */
---color-border: #DED6C9;
+--color-border: #F2C7C5;
 
 /* Dark text */
---color-text-dark: #100D0F;
+--color-text-dark: #3E2B3A;
 
 /* Muted text */
 --color-text-muted:
     color-mix(
         in srgb,
-        #100D0F 60%,
+        #3E2B3A 65%,
         white
     );
 
@@ -481,31 +483,31 @@
    COLOR USAGE GUIDE — DEBUT
 ========================================== */
 
-/* REGAL BLACK   #171316
+/* DEEP PLUM       #4A3445
    Headings, icons, navigation, strong text
 
-   DEEP BLACK    #100D0F
-   Hero name, dark overlays, countdown band, QR codes
+   DARKEST PLUM    #3E2B3A
+   Hero name, dark overlays, QR codes
 
-   DEEP BURGUNDY #5D0B1A
-   Buttons, hover/active states, small emphasis
+   DEEP MAUVE      #8E6483
+   Buttons, hover/active states, countdown band
 
-   ROSE RED      #A51C35
-   Script lines, roses, highlights
+   DUSTY ROSE      #DDA6B4  (script text deepened to #B97C93)
+   Script lines, roses, highlights, envelope
 
-   CHAMPAGNE GOLD #C9A45C
-   Ornaments, dividers, seal, baroque sun details
+   MAUVE PINK      #C99BB7
+   Silk backdrop, decorative lines, envelope inside
 
-   PALE GOLD     #E8D9B5
-   Soft decoration, badges
+   CHAMPAGNE GOLD  #E8BD70
+   Ornaments, dividers, seal
 
-   SILVER        #C8C9CE
-   Pearls, subtle cards, borders
+   BLUSH PINK      #F2C7C5
+   Soft decoration, badges, borders
 
-   PEARL IVORY   #F5EFE5
+   CHAMPAGNE CREAM #FBE9DF
    Page background, large negative space
 
-   PEARL WHITE   #FCFAF6
+   IVORY WHITE     #FFF9F0
    Cards, light text on dark sections
 */
   /* ─────────────────────────────────────────────────────────── */

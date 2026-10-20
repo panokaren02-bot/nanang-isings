@@ -90,3 +90,80 @@
     0 1px 2px rgba(0, 0, 0, 0.75),
     0 2px 12px rgba(20, 0, 5, 0.7);
 }
+
+/* ---- Pastel title block (plain display) ----
+   Same lettering as the loading screen: bronze-gold name + script, plum full
+   name between gold rules, italic mauve tagline. Doubled class beats the base
+   rules in loading-screen.css. */
+.home-hero.home-hero--plain .home-hero-title-main,
+.home-hero.home-hero--plain .home-hero-title-script {
+  /* Deeper bronze than the loader so it reads clearly on the light blush page */
+  background: linear-gradient(180deg, #c99347 0%, #a8702c 32%, #7d4c1a 58%, #9a6326 80%, #c18a42 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  /* text-shadow would show through the clipped fill, so the lift is a drop-shadow */
+  text-shadow: none;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9)) drop-shadow(0 0 10px rgba(255, 250, 244, 0.95)) drop-shadow(0 4px 10px rgba(110, 60, 40, 0.2));
+}
+/* Script swashes reach past the glyph box — pad so the gold fill covers them */
+.home-hero.home-hero--plain .home-hero-title-script {
+  /* The gold fill only paints inside this box, so it gets generous room on every side
+     for the script's tall capitals and the long "y" swash; the negative bottom margin
+     gives that room back. The top room is taken back in hero.tsx (--hero-script-overlap). */
+  padding: 0.55em 0.6em 0.6em;
+  margin-bottom: -0.45em;
+}
+/* Ivory halo behind the whole text block so every line reads over the bubbles */
+.home-hero--plain .home-hero-content::before {
+  content: '';
+  position: absolute;
+  inset: 4% -6%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 58% 52% at 50% 50%, rgba(255, 249, 242, 0.92) 0%, rgba(255, 249, 242, 0.7) 45%, rgba(255, 249, 242, 0) 78%);
+}
+/* "100" in "100th Birthday": upright serif, scaled to sit with the script */
+.home-hero-title-num {
+  font-size: 0.66em;
+  letter-spacing: 0.02em;
+  margin-right: 0.04em;
+}
+
+.home-hero.home-hero--plain .home-hero-eyebrow {
+  color: var(--color-motif-deep);
+  font-weight: 600;
+}
+.home-hero.home-hero--plain .home-hero-fullname {
+  color: var(--color-welcome-text);
+  text-shadow: 0 0 10px rgba(255, 248, 240, 0.9);
+}
+.home-hero-rule {
+  flex: none;
+  width: clamp(1.5rem, 8vw, 3.5rem);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-welcome-gold));
+}
+.home-hero-rule--end {
+  background: linear-gradient(270deg, transparent, var(--color-welcome-gold));
+}
+.home-hero.home-hero--plain .home-hero-tagline {
+  color: color-mix(in srgb, var(--color-motif-deep) 80%, var(--color-welcome-text));
+  text-shadow: 0 0 10px rgba(255, 248, 240, 0.9);
+}
+.home-hero.home-hero--plain .home-hero-date {
+  color: var(--color-welcome-text);
+}
+.home-hero.home-hero--plain .home-hero-meta {
+  color: var(--color-welcome-text);
+  font-weight: 600;
+}
+.home-hero-meta-soft {
+  color: var(--color-motif-deep);
+}
+
+/* Countdown band: shorter fade-in on short desktop windows so the whole hero fits one screen */
+.home-hero.home-hero--plain .home-hero-countdown-bar {
+  padding-top: clamp(2rem, 7dvh, 5rem);
+}

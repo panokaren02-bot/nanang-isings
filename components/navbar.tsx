@@ -4,7 +4,6 @@ import { celebrantName } from "@/lib/celebrant"
 import { useState, useEffect, useMemo, useRef } from "react"
 import Link from "next/link"
 import { useSiteConfig } from "@/hooks/use-site-config"
-import Image from "next/image"
 import StaggeredMenu from "./StaggeredMenu"
 import { Cormorant_Garamond } from "next/font/google"
 import { siteConfig } from "@/content/site"
@@ -108,23 +107,21 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
+      // Frosted ivory → blush bar; firmer and softly shadowed once scrolled
+      className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-all duration-700 ease-out ${
         isScrolled
-          ? "shadow-[0_12px_28px_color-mix(in_srgb,var(--color-welcome-navy)_22%,transparent)]"
-          : "shadow-[0_6px_16px_color-mix(in_srgb,var(--color-welcome-navy)_12%,transparent)]"
+          ? "shadow-[0_10px_30px_color-mix(in_srgb,var(--color-motif-deep)_16%,transparent)]"
+          : "shadow-[0_4px_14px_color-mix(in_srgb,var(--color-motif-deep)_8%,transparent)]"
       }`}
       style={{
-        background:
-          "linear-gradient(180deg, color-mix(in srgb, var(--color-motif-accent) 88%, white) 0%, var(--color-motif-accent) 42%, var(--color-motif-deep) 100%)",
-        borderBottom:
-          "1px solid color-mix(in srgb, var(--color-welcome-navy) 28%, transparent)",
+        background: isScrolled
+          ? "linear-gradient(180deg, color-mix(in srgb, var(--color-motif-soft) 94%, transparent) 0%, color-mix(in srgb, var(--color-motif-blush) 55%, var(--color-motif-cream)) 100%)"
+          : "linear-gradient(180deg, color-mix(in srgb, var(--color-motif-soft) 82%, transparent) 0%, color-mix(in srgb, var(--color-motif-cream) 78%, transparent) 100%)",
       }}
     >
-      {isScrolled && (
-        <div className="absolute inset-0 bg-gradient-to-r from-white/12 via-transparent to-[color-mix(in_srgb,var(--color-welcome-navy)_10%,transparent)] pointer-events-none" />
-      )}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/14 via-transparent to-[color-mix(in_srgb,var(--color-welcome-navy)_14%,transparent)] pointer-events-none" />
-      
+      {/* Gold hairline along the bottom edge, fading out at the sides */}
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[color-mix(in_srgb,var(--color-welcome-gold)_75%,transparent)] to-transparent pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 relative">
         <div className="flex justify-between items-center h-12 sm:h-14 md:h-16 gap-3">
           <Link
@@ -133,17 +130,22 @@ export function Navbar() {
             aria-label={`${celebrantName(siteConfig)} — Home`}
           >
             <div className="relative h-[2.5rem] w-[3.2rem] sm:h-[2.85rem] sm:w-[3.65rem] md:h-[3.35rem] md:w-[4.15rem] shrink-0 my-0">
-              <Image
-                src={monogramSrc}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 51px, 67px"
-                priority
-                // Monogram shown in white: brightness-0 flattens the artwork, invert turns it white
-                className="object-contain object-center p-0 brightness-0 invert group-hover:scale-105 group-active:scale-100 transition-transform duration-500 drop-shadow-[0_2px_6px_color-mix(in_srgb,var(--color-welcome-navy)_35%,transparent)]"
+              {/* Monogram tinted deep mauve: the artwork is used as a mask over a solid fill */}
+              <div
+                className="absolute inset-0 bg-[var(--color-motif-deep)] group-hover:scale-105 group-active:scale-100 transition-transform duration-500"
+                style={{
+                  maskImage: `url("${monogramSrc}")`,
+                  WebkitMaskImage: `url("${monogramSrc}")`,
+                  maskSize: "contain",
+                  WebkitMaskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskPosition: "center",
+                  WebkitMaskPosition: "center",
+                }}
               />
             </div>
-            <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[color-mix(in_srgb,var(--color-motif-soft)_18%,transparent)] blur-md -z-10" />
+            <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[color-mix(in_srgb,var(--color-motif-blush)_45%,transparent)] blur-md -z-10" />
           </Link>
 
           <div className="hidden xl:flex gap-0.5 items-center">
@@ -153,24 +155,17 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`${link.wideOnly ? "hidden 2xl:inline-block" : ""} whitespace-nowrap px-2 py-2 text-xs lg:px-2.5 lg:text-sm ${cormorant.className} font-medium rounded-lg transition-all duration-500 relative group ${
+                  className={`${link.wideOnly ? "hidden 2xl:inline-block" : ""} whitespace-nowrap px-2.5 py-1.5 text-sm lg:px-3 lg:text-[0.95rem] ${cormorant.className} font-semibold tracking-wide rounded-full transition-all duration-500 relative group ${
                     isActive
-                      ? "text-[var(--color-motif-deep)] bg-[var(--color-motif-soft)] backdrop-blur-md shadow-[0_6px_16px_color-mix(in_srgb,var(--color-welcome-navy)_14%,transparent)] border border-[color-mix(in_srgb,var(--color-motif-soft)_85%,white)]"
-                      : "text-[var(--color-motif-soft)] hover:text-[var(--color-motif-soft)] hover:bg-white/14 hover:border hover:border-[color-mix(in_srgb,var(--color-motif-soft)_40%,transparent)] hover:shadow-[0_6px_14px_color-mix(in_srgb,var(--color-welcome-navy)_12%,transparent)] hover:scale-105 active:scale-95 bg-transparent border border-transparent"
+                      ? "text-[var(--color-motif-deep)] bg-[color-mix(in_srgb,var(--color-motif-blush)_70%,white)] shadow-[0_4px_12px_color-mix(in_srgb,var(--color-motif-deep)_14%,transparent)] border border-[color-mix(in_srgb,var(--color-welcome-gold)_55%,transparent)]"
+                      : "text-[var(--color-welcome-text)] hover:text-[var(--color-motif-deep)] hover:bg-[color-mix(in_srgb,var(--color-motif-blush)_40%,transparent)] active:scale-95 bg-transparent border border-transparent"
                   }`}
                 >
                   {link.label}
-                  <span
-                    className={`absolute bottom-0 left-0 h-0.5 bg-[var(--color-motif-silver)] transition-all duration-500 rounded-full ${
-                      isActive
-                        ? "w-full shadow-[0_0_8px_color-mix(in_srgb,var(--color-motif-soft)_65%,transparent)]"
-                        : "w-0 group-hover:w-full group-hover:shadow-[0_0_6px_color-mix(in_srgb,var(--color-motif-soft)_50%,transparent)]"
-                    }`}
-                  />
-                  {isActive && (
-                    <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[var(--color-welcome-gold)] animate-pulse shadow-[0_0_6px_color-mix(in_srgb,var(--color-welcome-gold)_55%,transparent)]" />
+                  {/* Gold underline grows in on hover (hidden on the active pill) */}
+                  {!isActive && (
+                    <span className="absolute bottom-0.5 left-1/2 h-px w-0 -translate-x-1/2 bg-[var(--color-welcome-gold)] transition-all duration-500 rounded-full group-hover:w-2/3" />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
                 </Link>
               )
             })}
@@ -182,18 +177,19 @@ export function Navbar() {
               items={menuItems}
               socialItems={[]}
               displaySocials={false}
-              menuButtonColor="var(--color-motif-soft)"
-              // gold X on the wine menu panel
-              openMenuButtonColor="var(--color-welcome-gold)"
+              menuButtonColor="var(--color-motif-deep)"
+              // deep mauve X on the ivory menu panel
+              openMenuButtonColor="var(--color-motif-deep)"
               changeMenuColorOnOpen={true}
-              // layers that sweep in before the panel: crimson → gold → near-black
+              // layers that sweep in before the panel: blush → dusty rose → mauve
               colors={[
+                "var(--color-motif-blush)",
                 "var(--color-motif-accent)",
                 "var(--color-welcome-gold)",
-                "var(--color-motif-deep)",
-                "var(--color-coastal-deep)",
+                "var(--color-coastal-light)",
               ]}
-              accentColor="var(--color-welcome-gold)"
+              accentColor="var(--color-motif-deep)"
+              fontFamily={cormorant.style.fontFamily}
               isFixed={true}
               activeLink={activeSection}
               onMenuOpen={() => {}}

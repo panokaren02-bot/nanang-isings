@@ -123,7 +123,6 @@ export const Hero: React.FC<HeroProps> = ({
   const content = siteConfig.loadingScreen ?? defaultSiteConfig.loadingScreen;
   const isPlain = content.display === 'plain';
   const plainTheme = content.plainTheme ?? defaultSiteConfig.loadingScreen.plainTheme;
-  const cornerDecos = content.cornerDecos ?? defaultSiteConfig.loadingScreen.cornerDecos;
   const plainInvite = content.plainInvite ?? defaultSiteConfig.loadingScreen.plainInvite;
   // Paper card wording is shared with the loading screen poster
   const gala = content.gala ?? defaultSiteConfig.loadingScreen.gala;
@@ -569,21 +568,6 @@ export const Hero: React.FC<HeroProps> = ({
         <>
           <PlainAtmosphere fixed baseColor={plainTheme.background} />
           <PlainBubbles fixed />
-          <div className="env-invite-plain-corners" aria-hidden="true">
-            {(
-              [
-                { src: cornerDecos.topLeft, className: 'left-0 top-0' },
-                { src: cornerDecos.topRight, className: 'right-0 top-0' },
-                { src: cornerDecos.bottomLeft, className: 'left-0 bottom-0' },
-                { src: cornerDecos.bottomRight, className: 'right-0 bottom-0' },
-              ] as const
-            ).map(({ src, className }) => (
-              <div key={src} className={`pointer-events-none absolute ${className}`}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt="" className="env-invite-plain-corner-img" />
-              </div>
-            ))}
-          </div>
         </>
       )}
 
@@ -771,23 +755,35 @@ export const Hero: React.FC<HeroProps> = ({
                           {fill(gala.title)}
                         </span>
                         <span className={`${aboveTheBeyond.className} env-invite-letter-title__script`}>
-                          {gala.subtitle}
+                          {/* Digits use the serif — the script font's numerals read poorly */}
+                          {gala.subtitle.split(/(\d+)/).filter(Boolean).map((part, i) =>
+                            /^\d+$/.test(part) ? (
+                              <span key={i} className={`${theSeasons.className} env-invite-letter-title__num`}>
+                                {part}
+                              </span>
+                            ) : (
+                              part
+                            ),
+                          )}
                         </span>
                       </span>
                       <div className="env-invite-letter-bottom">
-                        <span
-                          className="env-invite-letter-occasion"
-                          role="img"
-                          aria-label={`${gala.occasionNumber}${gala.occasionSuffix} ${gala.occasion}`}
-                        >
-                          <span className={`${theSeasons.className} env-invite-letter-occasion__age`}>
-                            {gala.occasionNumber}
-                            <sup>{gala.occasionSuffix}</sup>
+                        {/* Age line — skipped when the subtitle already says it (e.g. "100th Birthday") */}
+                        {!gala.subtitle.includes(String(gala.occasionNumber)) && (
+                          <span
+                            className="env-invite-letter-occasion"
+                            role="img"
+                            aria-label={`${gala.occasionNumber}${gala.occasionSuffix} ${gala.occasion}`}
+                          >
+                            <span className={`${theSeasons.className} env-invite-letter-occasion__age`}>
+                              {gala.occasionNumber}
+                              <sup>{gala.occasionSuffix}</sup>
+                            </span>
+                            <span className={`${aboveTheBeyond.className} env-invite-letter-occasion__script`}>
+                              {gala.occasion}
+                            </span>
                           </span>
-                          <span className={`${aboveTheBeyond.className} env-invite-letter-occasion__script`}>
-                            {gala.occasion}
-                          </span>
-                        </span>
+                        )}
                         <span className="env-invite-letter-divider" aria-hidden="true" />
                         <span className="env-invite-letter-date" role="img" aria-label={letterDate.label}>
                           <span className="env-invite-letter-date__weekday">{letterDate.weekday}</span>

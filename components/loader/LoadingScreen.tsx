@@ -83,9 +83,15 @@ const T = {
   occasion: 3150,
   bottomRule: 3500,
   details: 3650,
-  detailsStagger: 160,
-  progress: 4300,
+  progress: 4000,
 } as const;
+
+// "November 21, 2026" → "Nov 21, 2026"
+function shortDate(text: string) {
+  const d = new Date(text);
+  if (!text || Number.isNaN(d.getTime())) return text;
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
 
 // Gold dust drifting up over the velvet
 const MOTES = Array.from({ length: 22 }, (_, i) => ({
@@ -145,23 +151,14 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete, onFade
   // Time already played before this mount (0 on a normal first load)
   const elapsedRef = useRef(0);
 
-  const eventDate = useMemo(() => new Date(siteConfig.wedding.date), [siteConfig.wedding.date]);
-  const dateLabel = Number.isNaN(eventDate.getTime())
-    ? siteConfig.wedding.date
-    : eventDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
   const name = fill(gala.title);
+  const fullName = gala.fullName ?? defaultSiteConfig.loadingScreen.gala.fullName;
+  const fullNameScript = gala.fullNameScript ?? defaultSiteConfig.loadingScreen.gala.fullNameScript;
+  const venueCity = gala.venueCity ?? defaultSiteConfig.loadingScreen.gala.venueCity;
   const { ceremony } = siteConfig;
-  const details = [
-    { key: 'date', label: 'Date', value: dateLabel, sub: ceremony.day },
-    {
-      key: 'time',
-      label: 'Time',
-      value: ceremony.time,
-      sub: ceremony.guestsTime ? `Call time ${ceremony.guestsTime}` : '',
-    },
-    { key: 'venue', label: 'Venue', value: ceremony.location, sub: ceremony.venue },
-  ].filter((d) => d.value);
+  // One compact line: date · venue, city
+  const venueLine = [ceremony.location, venueCity].filter(Boolean).join(', ');
+  const detailsLine = [shortDate(siteConfig.wedding.date), venueLine].filter(Boolean);
 
   useEffect(() => {
     document.documentElement.style.overflow = 'hidden';
@@ -278,20 +275,33 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete, onFade
           <GoldRule className="gala-reveal gala-reveal--wide" style={delay(T.topRule)} />
           <h1 className="gala__title" aria-label={`${name} ${gala.subtitle}`}>
             <span className="gala__name" aria-hidden="true">
-              {Array.from(name).map((ch, i) => (
-                <span
-                  key={i}
-                  className="gala__name-letter gala-gold gala-letter"
-                  style={delay(T.nameStart + i * T.nameStagger)}
-                >
-                  {ch}
-                </span>
-              ))}
+              {Array.from(name).map((ch, i) =>
+                ch === ' ' ? (
+                  <span key={i} className="gala__name-space" />
+                ) : (
+                  <span
+                    key={i}
+                    className="gala__name-letter gala-gold gala-letter"
+                    style={delay(T.nameStart + i * T.nameStagger)}
+                  >
+                    {ch}
+                  </span>
+                ),
+              )}
             </span>
             {gala.subtitle && (
               <span className="gala__subtitle-wrap" aria-hidden="true">
-                <span className="gala__subtitle gala-script gala-gold gala-write" style={delay(T.subtitle)}>
-                  {gala.subtitle}
+                {/* Digits ("100") use the serif italic — the script font's numerals read poorly.
+                    Each piece carries its own gold fill; the write-on mask stays on the parent. */}
+                <span className="gala__subtitle gala-script gala-write" style={delay(T.subtitle)}>
+                  {gala.subtitle.split(/(\d+)/).filter(Boolean).map((part, i) => (
+                    <span
+                      key={i}
+                      className={`gala-script gala-gold${/^\d+$/.test(part) ? ' gala__num' : ''}`}
+                    >
+                      {part}
+                    </span>
+                  ))}
                 </span>
               </span>
             )}
@@ -319,6 +329,8 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete, onFade
               <GoldRule />
             </div>
           )}
+          {/* Gold arch framing the portrait, like the gilded chair on the printed invite */}
+          <div className="gala__arch gala-reveal" style={delay(T.photo - 200)} aria-hidden="true" />
           {gala.photo && (
             <div className="gala__photo gala-reveal gala-reveal--photo" style={delay(T.photo)}>
               <Image
@@ -334,50 +346,35 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete, onFade
         </div>
 
         <footer className="gala__foot">
-          {gala.kicker && (
-            <p className="gala__kicker gala-reveal gala-reveal--track" style={delay(T.kicker)}>
-              {gala.kicker}
-            </p>
-          )}
-          <h2
-            className="gala__occasion"
-            aria-label={`${gala.occasionNumber}${gala.occasionSuffix} ${gala.occasion}`}
-          >
-            {/* Each piece carries its own gold fill — background-clip text doesn't reach nested elements */}
-            <span className="gala__age gala-pop" style={delay(T.age)} aria-hidden="true">
-              <span className="gala__age-num gala-gold">{gala.occasionNumber}</span>
-              {gala.occasionSuffix && (
-                <span className="gala__age-suffix">
-                  <span className="gala-gold">{gala.occasionSuffix}</span>
+          {(fullName || fullNameScript) && (
+            <h2 className="gala__fullname" aria-label={`${fullName} ${fullNameScript}`.trim()}>
+              {/* Each piece carries its own gold fill — background-clip text doesn't reach nested elements */}
+              {fullName && (
+                <span className="gala__fullname-main gala-gold gala-pop" style={delay(T.age)} aria-hidden="true">
+                  {fullName}
                 </span>
               )}
-            </span>
-            {/* Script line is written on left → right, overlapping the age like the hero title */}
-            <span className="gala__occasion-script-wrap" aria-hidden="true">
-              <span
-                className="gala__occasion-script gala-script gala-gold gala-write"
-                style={delay(T.occasion)}
-              >
-                {gala.occasion}
-              </span>
-            </span>
-          </h2>
+              {/* Script surname is written on left → right, overlapping the line above */}
+              {fullNameScript && (
+                <span className="gala__fullname-script-wrap" aria-hidden="true">
+                  <span className="gala-script gala-gold gala-write" style={delay(T.occasion)}>
+                    {fullNameScript}
+                  </span>
+                </span>
+              )}
+            </h2>
+          )}
           <GoldRule className="gala-reveal gala-reveal--wide" style={delay(T.bottomRule)} />
 
-          {details.length > 0 && (
-            <dl className="gala__details">
-              {details.map(({ key, label, value, sub }, i) => (
-                <div
-                  key={key}
-                  className={`gala__detail gala__detail--${key} gala-reveal`}
-                  style={delay(T.details + i * T.detailsStagger)}
-                >
-                  <dt>{label}</dt>
-                  <dd className="gala__detail-value">{value}</dd>
-                  {sub && <dd className="gala__detail-sub">{sub}</dd>}
-                </div>
+          {detailsLine.length > 0 && (
+            <p className="gala__line gala-reveal" style={delay(T.details)}>
+              {detailsLine.map((part, i) => (
+                <React.Fragment key={part}>
+                  {i > 0 && <span className="gala__line-dot" aria-hidden="true">◆</span>}
+                  <span>{part}</span>
+                </React.Fragment>
               ))}
-            </dl>
+            </p>
           )}
 
           <div

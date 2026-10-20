@@ -1,17 +1,27 @@
 "use client"
 
 import { fillCelebrant } from "@/lib/celebrant"
-import { Cinzel } from "next/font/google"
+import { Cinzel, Cormorant_Garamond } from "next/font/google"
 import localFont from "next/font/local"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { motion, useReducedMotion, type Variants } from "motion/react"
 import { useSiteConfig } from "@/hooks/use-site-config"
+import { PlainAtmosphere } from "@/components/loader/PlainAtmosphere"
 import { PlainBubbles } from "@/components/loader/PlainBubbles"
 
 const cinzel = Cinzel({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+})
+
+// Body copy (.font-goudy-italic → love-story-red.css .details-pastel) in Cormorant Garamond,
+// same as the story / details sections
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
+  variable: "--details-font-body",
 })
 
 const theSeasons = localFont({
@@ -35,17 +45,9 @@ const titleSize = "clamp(2.85rem, 13.5vw, 6.75rem)"
 const photoTitleShadow =
   "0 1px 0 rgb(255 250 244 / 28%), 0 2px 18px rgb(42 34 28 / 55%), 0 12px 36px rgb(42 34 28 / 40%)"
 
-const CORNER_DECO_CLASS =
-  "block h-auto w-auto max-w-[150px] sm:max-w-[230px] md:max-w-[300px] lg:max-w-[360px] select-none opacity-90"
-
-// Plain background = the hero's circle pattern (PlainBubbles paints its own aqua base)
-const plainBg = "var(--color-bg-pattern-base)"
-
-// Text sitting directly on the circle pattern (colors: globals.css → --color-on-pattern*)
-const onBg = {
-  color: "var(--color-on-pattern)",
-  textShadow: "0 1px 0 var(--color-on-pattern-glow), 0 2px 12px var(--color-on-pattern-glow)",
-} as const
+// Text sitting directly on the pastel pattern: plum with a soft ivory glow
+const textLift = "0 0 10px rgba(255, 249, 242, 0.95), 0 0 2px rgba(255, 249, 242, 0.9)"
+const onBg = { color: "#4f3646", textShadow: textLift } as const
 
 const stagger: Variants = {
   hidden: {},
@@ -57,13 +59,6 @@ const rise: Variants = {
   show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.85, ease: entryEase } },
 }
 
-function DecoImg({ src, className }: { src: string; className: string }) {
-  if (!src) return null
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} loading="lazy" decoding="async" alt="" aria-hidden="true" className={className} />
-  )
-}
 
 // "!" and other symbols in Cinzel, letters in The Seasons
 function SpecialCharFont({ text }: { text: string }) {
@@ -92,25 +87,11 @@ function PlainSeeYouThere() {
   return (
     <section
       id="see-you-there"
-      className={`${theSeasons.variable} ${aboveTheBeyond.variable} relative isolate w-full overflow-hidden`}
-      style={{ background: plainBg }}
+      className={`details-pastel ${theSeasons.variable} ${aboveTheBeyond.variable} ${cormorant.variable} relative isolate w-full overflow-hidden`}
     >
-      {/* Same circle pattern as the hero */}
+      {/* Same pastel backdrop as the home hero */}
+      <PlainAtmosphere baseColor="var(--color-welcome-bg)" />
       <PlainBubbles />
-
-      {/* Corner decorations (from site.ts) */}
-      <div className="pointer-events-none absolute left-0 top-0 z-10">
-        <DecoImg src={plain.decos.topLeft} className={CORNER_DECO_CLASS} />
-      </div>
-      <div className="pointer-events-none absolute right-0 top-0 z-10">
-        <DecoImg src={plain.decos.topRight} className={CORNER_DECO_CLASS} />
-      </div>
-      <div className="pointer-events-none absolute bottom-0 left-0 z-10">
-        <DecoImg src={plain.decos.bottomLeft} className={CORNER_DECO_CLASS} />
-      </div>
-      <div className="pointer-events-none absolute bottom-0 right-0 z-10">
-        <DecoImg src={plain.decos.bottomRight} className={CORNER_DECO_CLASS} />
-      </div>
 
       <motion.div
         className="relative z-20 mx-auto flex min-h-[78svh] max-w-3xl flex-col items-center justify-center px-6 py-24 text-center sm:min-h-[88svh] sm:py-28"
@@ -122,8 +103,8 @@ function PlainSeeYouThere() {
         {plain.eyebrow ? (
           <motion.p
             variants={rise}
-            className={`${cinzel.className} text-[0.65rem] font-semibold uppercase tracking-[0.3em] sm:text-xs`}
-            style={onBg}
+            className={`${cinzel.className} text-[0.7rem] font-semibold uppercase tracking-[0.3em] sm:text-sm`}
+            style={{ color: "#b46f86", textShadow: textLift }}
           >
             {plain.eyebrow}
           </motion.p>
@@ -135,8 +116,8 @@ function PlainSeeYouThere() {
           </span>
           <span
             aria-hidden
-            className={`${theSeasons.className} block uppercase leading-[0.88] tracking-[0.06em] sm:tracking-[0.08em]`}
-            style={{ fontSize: titleSize, ...onBg }}
+            className={`${theSeasons.className} love-story-title-gold block pb-2 uppercase leading-[1.05] tracking-[0.06em] sm:tracking-[0.08em]`}
+            style={{ fontSize: titleSize }}
           >
             <SpecialCharFont text={content.titleLine1} />
             <br />
@@ -147,34 +128,29 @@ function PlainSeeYouThere() {
         {plain.script ? (
           <motion.p
             variants={rise}
-            className={`${aboveTheBeyond.className} mt-3 text-[1.5rem] leading-tight sm:mt-4 sm:text-[2rem] md:text-[2.35rem]`}
-            style={onBg}
+            className={`${aboveTheBeyond.className} mt-3 px-2 pb-1 text-[1.6rem] leading-[1.25] sm:mt-4 sm:text-[2.2rem] md:text-[2.6rem]`}
+            style={{ color: "var(--color-motif-deep)", textShadow: textLift }}
           >
             {fill(plain.script)}
           </motion.p>
         ) : null}
 
         <motion.div variants={rise} className="my-5 flex items-center justify-center gap-2 sm:my-6" aria-hidden>
-          <span className="h-px w-12 sm:w-20" style={{ background: "var(--color-on-pattern-line)" }} />
-          <span className="h-1.5 w-1.5 rotate-45" style={{ background: "var(--color-on-pattern-line)" }} />
-          <span className="h-px w-12 sm:w-20" style={{ background: "var(--color-on-pattern-line)" }} />
+          <span className="h-px w-12 sm:w-20" style={{ background: "var(--color-welcome-gold)" }} />
+          <span className="h-1.5 w-1.5 rotate-45" style={{ background: "var(--color-welcome-gold)" }} />
+          <span className="h-px w-12 sm:w-20" style={{ background: "var(--color-welcome-gold)" }} />
         </motion.div>
 
         {plain.message ? (
           <motion.p
             variants={rise}
-            className="font-goudy-italic mx-auto mt-4 max-w-md text-sm leading-relaxed sm:mt-5 sm:text-base"
+            className="font-goudy-italic mx-auto mt-4 max-w-md text-[1.1rem] leading-relaxed sm:mt-5 sm:text-[1.3rem]"
             style={{ ...onBg, fontWeight: 600 }}
           >
             {fill(plain.message)}
           </motion.p>
         ) : null}
 
-        {plain.decos.footerVine ? (
-          <motion.div variants={rise} className="mt-7 sm:mt-9">
-            <DecoImg src={plain.decos.footerVine} className="mx-auto block h-auto w-56 select-none opacity-90 sm:w-72 md:w-80" />
-          </motion.div>
-        ) : null}
       </motion.div>
     </section>
   )

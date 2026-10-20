@@ -4,10 +4,11 @@ import { celebrantName } from "@/lib/celebrant"
 import { useState, type CSSProperties, type ReactNode } from "react"
 import { ChevronDown } from "lucide-react"
 import { motion, useReducedMotion, type Variants } from "motion/react"
-import { Cinzel, Lora, Playfair_Display } from "next/font/google"
+import { Cinzel, Cormorant_Garamond, Playfair_Display } from "next/font/google"
 import localFont from "next/font/local"
 import { useSiteConfig } from "@/hooks/use-site-config"
 import { layeredSectionTitleSize, sectionType } from "@/lib/section-typography"
+import { PlainAtmosphere } from "@/components/loader/PlainAtmosphere"
 import { PlainBubbles } from "@/components/loader/PlainBubbles"
 import { RisingMotes } from "@/components/rising-motes"
 import "@/components/loader/loading-screen.css"
@@ -18,19 +19,19 @@ const cinzel = Cinzel({
   weight: ["400", "600", "700"],
 })
 
-// Upright, screen-friendly serif for the answers (same as the My Story paragraphs)
-const lora = Lora({
+// Body copy (.font-goudy-italic → love-story-red.css .details-pastel) in Cormorant Garamond,
+// same as the story / details sections
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  display: "swap",
+  weight: ["500", "600"],
+  style: ["normal", "italic"],
+  variable: "--details-font-body",
 })
 
-// Question numbers: high-contrast italic numerals (The Seasons has no clean digits)
 const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["500", "600"],
-  style: ["italic"],
-  display: "swap",
+  style: ["normal", "italic"],
 })
 
 const theSeasons = localFont({
@@ -45,32 +46,29 @@ const aboveTheBeyond = localFont({
   variable: "--font-above-beyond",
 })
 
-// Red velvet vibe (same as the sections around it): white + gold text on the red
-// circle pattern; the questions sit on an ivory card with wine questions, gold accents
-// and crimson → wine number badges.
-// Circle colors + blur: components/sections/love-story-red.css (.red-velvet-root); gold dust rises behind the content
+// Pastel (same as the sections around it): plum text with an ivory glow on the pastel
+// bubbles; the questions sit on an ivory card with mauve questions, gold accents and
+// dusty-rose → mauve number badges. Gold dust rises behind the content.
 const WINE = "var(--color-motif-deep)"
-const CRIMSON = "var(--color-motif-accent)"
+const CRIMSON = "var(--color-motif-deep)"
 const IVORY = "var(--color-motif-soft)"
 const GOLD = "var(--color-welcome-gold)"
 const GOLD_INK = "color-mix(in srgb, var(--color-welcome-gold) 78%, var(--color-motif-deep))"
 const BODY = "color-mix(in srgb, var(--color-welcome-text) 85%, var(--color-motif-deep))"
 const BADGE_GRADIENT = "linear-gradient(180deg, var(--color-motif-accent) 0%, var(--color-motif-deep) 100%)"
 
-const sectionBg = "color-mix(in srgb, var(--color-motif-deep) 70%, var(--color-coastal-deep))"
 
-const textLift =
-  "0 1px 2px color-mix(in srgb, var(--color-coastal-deep) 60%, transparent), 0 2px 14px color-mix(in srgb, var(--color-coastal-deep) 45%, transparent)"
+const textLift = "0 0 10px rgba(255, 249, 242, 0.95), 0 0 2px rgba(255, 249, 242, 0.9)"
 
-// Text sitting directly on the red pattern: white, or gold for scripts / eyebrows
-const onBg = { color: "#fff", textShadow: textLift } as const
-const onBgGold = { color: GOLD, textShadow: textLift } as const
+// Text sitting directly on the pastel pattern: white, or gold for scripts / eyebrows
+const onBg = { color: "#4f3646", textShadow: textLift } as const
+const onBgGold = { color: "#b46f86", textShadow: textLift } as const
 
 const cardStyle = {
   background:
     "radial-gradient(120% 40% at 50% 0%, color-mix(in srgb, white 70%, transparent) 0%, transparent 60%), linear-gradient(180deg, var(--color-motif-soft) 0%, var(--color-motif-cream) 100%)",
   boxShadow:
-    "0 30px 60px -28px color-mix(in srgb, var(--color-coastal-deep) 80%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 40%, transparent)",
+    "0 30px 60px -28px color-mix(in srgb, var(--color-motif-deep) 40%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 40%, transparent)",
 } as const
 
 const dividerLineStyle = {
@@ -80,9 +78,9 @@ const dividerLineStyle = {
 const ct = {
   body: sectionType.textRelaxed,
   // a touch smaller than sectionType.text (13 / 15 / 16px → 12.5 / 14 / 15px)
-  question: "text-[0.78rem] sm:text-[0.875rem] md:text-[0.95rem]",
+  question: "text-[0.98rem] sm:text-[1.05rem] md:text-[1.12rem]",
   // answers: 14 / 15 / 16px → 13 / 14.5 / 15px
-  answer: "text-[0.82rem] sm:text-[0.9rem] md:text-[0.95rem]",
+  answer: "text-[1rem] sm:text-[1.08rem] md:text-[1.15rem]",
 } as const
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -129,15 +127,15 @@ function FaqTitle({ title, subtitle }: { title: string; subtitle: string }) {
       </span>
       <span
         aria-hidden
-        className={`${theSeasons.className} block uppercase leading-[0.9] tracking-[0.04em] min-[400px]:tracking-[0.08em] sm:tracking-[0.12em] md:tracking-[0.14em]`}
-        style={{ fontSize: "var(--title-size)", ...onBg }}
+        className={`${theSeasons.className} love-story-title-gold block pb-1 uppercase leading-[1.1] tracking-[0.04em] min-[400px]:tracking-[0.08em] sm:tracking-[0.12em] md:tracking-[0.14em]`}
+        style={{ fontSize: "var(--title-size)" }}
       >
         {title}
       </span>
       <span
         aria-hidden
-        className={`${aboveTheBeyond.className} relative z-10 mx-auto mt-1.5 block w-fit max-w-full px-1 leading-[0.88] sm:mt-2 sm:leading-[0.9]`}
-        style={{ fontSize: "var(--script-size)", ...onBgGold }}
+        className={`${aboveTheBeyond.className} relative z-10 mx-auto mt-1.5 block w-fit max-w-full px-2 pb-1 leading-[1.15] sm:mt-2`}
+        style={{ fontSize: "var(--script-size)", color: "var(--color-motif-deep)", textShadow: textLift }}
       >
         {subtitle}
       </span>
@@ -190,7 +188,7 @@ function FaqAnswer({ answer }: { answer: string }) {
   const blocks = answer.split(/\n{2,}/)
   return (
     <div
-      className={`${lora.className} ${ct.answer} space-y-2.5 font-medium leading-[1.7]`}
+      className={`font-goudy-italic not-italic ${ct.answer} space-y-2.5 font-medium leading-[1.6]`}
       style={{ color: BODY }}
     >
       {blocks.map((block, i) => {
@@ -247,10 +245,10 @@ export function FAQ() {
 
   return (
     <div
-      className={`red-velvet-root ${theSeasons.variable} ${aboveTheBeyond.variable} relative w-full overflow-hidden`}
-      style={{ background: sectionBg }}
+      className={`details-pastel ${theSeasons.variable} ${aboveTheBeyond.variable} ${cormorant.variable} relative w-full overflow-hidden`}
     >
-      {/* Red circle pattern (colors: components/sections/love-story-red.css) */}
+      {/* Same pastel backdrop as the home hero */}
+      <PlainAtmosphere baseColor="var(--color-welcome-bg)" />
       <PlainBubbles />
       <RisingMotes count={30} />
       <section
@@ -321,7 +319,7 @@ export function FAQ() {
                         ? "color-mix(in srgb, var(--color-motif-blush) 26%, var(--color-motif-soft))"
                         : "color-mix(in srgb, var(--color-motif-blush) 8%, var(--color-motif-soft))",
                       boxShadow: isOpen
-                        ? "0 12px 24px -16px color-mix(in srgb, var(--color-coastal-deep) 50%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 45%, transparent)"
+                        ? "0 12px 24px -16px color-mix(in srgb, var(--color-motif-deep) 28%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 45%, transparent)"
                         : "inset 0 0 0 1px color-mix(in srgb, var(--color-welcome-gold) 18%, transparent)",
                     }}
                   >
@@ -351,7 +349,7 @@ export function FAQ() {
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <span
-                        className={`${cinzel.className} ${ct.question} flex-1 font-semibold leading-snug transition-colors duration-200`}
+                        className={`${playfair.className} ${ct.question} flex-1 font-medium leading-snug transition-colors duration-200`}
                         style={{ color: WINE }}
                       >
                         {item.question}
