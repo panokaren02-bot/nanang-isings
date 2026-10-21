@@ -9,7 +9,7 @@ import type { AttireColor } from "@/content/site"
 import Image from "next/image"
 import localFont from "next/font/local"
 import { Cinzel, Cormorant_Garamond, Playfair_Display } from "next/font/google"
-import { Shirt, Copy, Check, Navigation, Heart, MapPin } from "lucide-react"
+import { Shirt, Copy, Check, Navigation, Heart, MapPin, Sparkles } from "lucide-react"
 import { motion, useReducedMotion, type Variants } from "motion/react"
 import { PlainAtmosphere } from "@/components/loader/PlainAtmosphere"
 import { PlainBubbles } from "@/components/loader/PlainBubbles"
@@ -478,6 +478,96 @@ type VenueLabels = {
   copied: string
 }
 
+type PendingVenue = {
+  label: string
+  title: string
+  message: string
+  note?: string
+}
+
+// Replaces the address / QR / buttons while the venue is still to be announced
+function PendingVenuePanel({ pending, reduceMotion }: { pending: PendingVenue; reduceMotion: boolean | null }) {
+  return (
+    <div
+      className="relative overflow-hidden rounded-2xl border px-5 py-7 text-center sm:px-8 sm:py-9 md:px-10"
+      style={{ backgroundColor: softPanelStyle.backgroundColor, borderColor: softPanelStyle.borderColor }}
+    >
+      {/* Faint gold glow behind the title */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(60% 55% at 50% 40%, color-mix(in srgb, var(--color-welcome-gold) 16%, transparent) 0%, transparent 70%)",
+        }}
+        aria-hidden
+      />
+
+      <div className="relative flex flex-col items-center">
+        <span
+          className="relative flex h-11 w-11 items-center justify-center rounded-full sm:h-12 sm:w-12"
+          style={{
+            border: "1px solid color-mix(in srgb, var(--color-welcome-gold) 60%, transparent)",
+            background: "var(--color-motif-soft)",
+            boxShadow: "0 8px 18px -10px color-mix(in srgb, var(--color-motif-deep) 55%, transparent)",
+          }}
+          aria-hidden
+        >
+          {!reduceMotion && (
+            <motion.span
+              className="absolute inset-0 rounded-full"
+              style={{ border: "1px solid var(--color-welcome-gold)" }}
+              animate={{ scale: [1, 1.45], opacity: [0.55, 0] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
+            />
+          )}
+          <MapPin className="h-5 w-5 sm:h-[22px] sm:w-[22px]" style={{ color: C.accent }} />
+        </span>
+
+        <p
+          className={`${cinzel.className} ${ct.label} mt-4 font-semibold uppercase tracking-[0.32em] sm:mt-5`}
+          style={{ color: C.label }}
+        >
+          {pending.label}
+        </p>
+
+        <p
+          className={`${playfair.className} mt-1.5 text-[clamp(2rem,9vw,3.25rem)] font-medium italic leading-[1.05]`}
+          style={{ color: C.heading }}
+        >
+          {pending.title}
+        </p>
+
+        <div className="mt-3 flex w-full max-w-[14rem] items-center justify-center gap-2 sm:mt-4">
+          <span className="h-px flex-1" style={{ background: "linear-gradient(to right, transparent, var(--color-welcome-gold))" }} />
+          <Sparkles className="h-3 w-3 shrink-0" style={{ color: "var(--color-welcome-gold)" }} aria-hidden />
+          <span className="h-px flex-1" style={{ background: "linear-gradient(to left, transparent, var(--color-welcome-gold))" }} />
+        </div>
+
+        <p
+          className={`font-goudy-italic ${ct.body} mx-auto mt-3 max-w-md leading-relaxed sm:mt-4`}
+          style={{ color: C.body }}
+        >
+          {pending.message}
+        </p>
+
+        {pending.note ? (
+          <span
+            className={`${cinzel.className} ${ct.labelSm} mt-4 inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 font-semibold uppercase tracking-[0.2em] sm:mt-5`}
+            style={{
+              color: C.heading,
+              backgroundColor: C.light,
+              borderColor: "color-mix(in srgb, var(--color-welcome-gold) 55%, transparent)",
+            }}
+          >
+            <MapPin className="h-3 w-3" style={{ color: C.accent }} aria-hidden />
+            {pending.note}
+          </span>
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
 type EventVenueCardProps = {
   badge: string
   images: readonly string[]
@@ -501,6 +591,8 @@ type EventVenueCardProps = {
   labels: VenueLabels
   /** Shown on a gold-on-black panel when there are no venue photos */
   monogram?: string
+  /** Venue not announced yet: hides the address, QR code and buttons */
+  pending?: PendingVenue
 }
 
 function EventVenueCard({
@@ -524,7 +616,9 @@ function EventVenueCard({
   showDateDetails = true,
   labels,
   monogram,
+  pending,
 }: EventVenueCardProps) {
+  const reduceMotion = useReducedMotion()
   const { fg: qrFg, bg: qrBg } = useQrColors() // --color-qr-fg / --color-qr-bg in globals.css
   const eventDate = showDateDetails ? new Date(dateString) : null
   const copied = copiedItems.has(copyId)
@@ -618,14 +712,25 @@ function EventVenueCard({
               className={`${playfair.className} text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-1 sm:mb-1.5 drop-shadow-lg uppercase tracking-[0.12em] leading-tight`}
               style={{ color: C.light }}
             >
-              {locationName}
+              {pending ? `${pending.label} ${pending.title}` : locationName}
             </h3>
-            <p
-              className={`${playfair.className} text-[10px] sm:text-xs md:text-sm lg:text-base drop-shadow-md tracking-[0.06em] leading-snug`}
-              style={{ color: "var(--color-motif-silver)" }}
-            >
-              {venueAddress}
-            </p>
+            {pending ? (
+              pending.note ? (
+                <p
+                  className={`${playfair.className} text-[10px] sm:text-xs md:text-sm lg:text-base italic drop-shadow-md tracking-[0.06em] leading-snug`}
+                  style={{ color: "var(--color-motif-silver)" }}
+                >
+                  {pending.note}
+                </p>
+              ) : null
+            ) : (
+              <p
+                className={`${playfair.className} text-[10px] sm:text-xs md:text-sm lg:text-base drop-shadow-md tracking-[0.06em] leading-snug`}
+                style={{ color: "var(--color-motif-silver)" }}
+              >
+                {venueAddress}
+              </p>
+            )}
           </div>
         </div>
 
@@ -682,6 +787,10 @@ function EventVenueCard({
             )}
           </div>
 
+          {pending ? (
+            <PendingVenuePanel pending={pending} reduceMotion={reduceMotion} />
+          ) : (
+          <>
           <div
             className="rounded-2xl border p-3 sm:p-4 md:p-5 mb-4 sm:mb-6"
             style={{ backgroundColor: softPanelStyle.backgroundColor, borderColor: softPanelStyle.borderColor }}
@@ -748,6 +857,8 @@ function EventVenueCard({
               <span>{copied ? labels.copied : labels.copyAddress}</span>
             </button>
           </div>
+          </>
+          )}
         </div>
       </div>
     </div>
@@ -768,8 +879,10 @@ export function Details() {
 
   // "combined" = one card for both events at the ceremony venue (eventDetails.venues.layout)
   const isCombined = venues.layout === "combined"
-  const ceremonyImages = ceremony.image
-  const receptionImages = isCombined ? [] : reception.image
+  // Venue not announced yet → "To Follow" card: no photos, address, map or QR code
+  const pendingVenue = content.venueAnnounced === false ? content.pendingVenue : undefined
+  const ceremonyImages = pendingVenue ? [] : ceremony.image
+  const receptionImages = isCombined || pendingVenue ? [] : reception.image
   // "plain" display mode (loadingScreen.display) shows no photos above the reminders
   const isPlain = siteConfig.loadingScreen?.display === "plain"
   const reminderImages = isPlain ? [] : reminders.images
@@ -893,6 +1006,7 @@ export function Details() {
               onOpenMaps={openInMaps}
               showDateDetails={venues.combined.showDate}
               labels={labels}
+              pending={pendingVenue}
             />
           )}
 
@@ -917,6 +1031,7 @@ export function Details() {
               onOpenMaps={openInMaps}
               showDateDetails={venues.ceremony.showDate}
               labels={labels}
+              pending={pendingVenue}
             />
           )}
 
@@ -939,7 +1054,9 @@ export function Details() {
               onCopy={copyToClipboard}
               onOpenMaps={openInMaps}
               showDateDetails={venues.reception.showDate}
+              monogram={siteConfig.celebrant?.monogram}
               labels={labels}
+              pending={pendingVenue}
             />
           )}
         </div>

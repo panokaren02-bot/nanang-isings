@@ -17,7 +17,7 @@ const OG_IMAGE_SIZE = siteConfig.linkPreviewImageSize
 const celebrant = siteConfig.celebrant.nickname
 const hashtag = siteConfig.snapShare.hashtag[0] ?? `#${celebrant.replace(/\s+/g, "")}At100`
 const eventTitle = `${celebrant}'s ${siteConfig.event.theme}`
-const eventDescription = `Join us in celebrating ${celebrant}'s 100th birthday on ${siteConfig.wedding.date} at ${siteConfig.ceremony.location}. A century of love, faith, and family — RSVP, see the program, dress code, and everything you need for the celebration.`
+const eventDescription = `Join us in celebrating ${celebrant}'s 100th birthday on ${siteConfig.wedding.date}${siteConfig.ceremony.venue ? ` at ${siteConfig.ceremony.location}` : " in Tuguegarao City"}. A century of love, faith, and family — RSVP, see the program, dress code, and everything you need for the celebration.`
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   },
   description: eventDescription,
   keywords:
-    `${celebrant} 100th birthday, ${celebrant} centennial, 100th birthday celebration, birthday invitation, ${siteConfig.ceremony.location}, RSVP, ${hashtag}`,
+    `${celebrant} 100th birthday, ${celebrant} centennial, 100th birthday celebration, birthday invitation, ${siteConfig.ceremony.venue ? siteConfig.ceremony.location : "Tuguegarao City"}, RSVP, ${hashtag}`,
   applicationName: `${celebrant}'s 100th Birthday`,
   authors: [{ name: celebrant }],
   creator: celebrant,

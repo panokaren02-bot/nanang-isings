@@ -97,8 +97,8 @@ const EVENT = {
 }
 
 // ── Date & times ────────────────────────────────────────────────────────────
-const EVENT_DATE = "November 21, 2026"
-const EVENT_DAY = "Saturday"
+const EVENT_DATE = "November 20, 2026"
+const EVENT_DAY = "Friday"
 
 const TIMES = {
   guestArrival: "5:00 PM", // ⚠ check — call time not given, using the event time
@@ -107,7 +107,11 @@ const TIMES = {
 }
 
 // ── Venue ───────────────────────────────────────────────────────────────────
-const VENUE = {
+// false = venue not final yet: every section shows "To Follow" and the Event Details
+// card hides the address, map, QR code and photos. Flip to true once confirmed.
+const VENUE_ANNOUNCED = false
+
+const CONFIRMED_VENUE = {
   name: "The Alexandria Events Place",
   address: "Maribbay corner Luna Street, Ugac Highway, Tuguegarao City",
   // ⚠ check — replace with the exact Google Maps pin when available
@@ -121,6 +125,15 @@ const VENUE = {
   // Add confirmed venue photos when available
   photos: ["/Details/venue-1.jpg", "/Details/venue-2.jpg", "/Details/venue-3.jpg"] as string[],
 }
+const PENDING_VENUE: typeof CONFIRMED_VENUE = {
+  name: "To Follow",
+  address: "",
+  map: "",
+  directions: [],
+  landmarks: [],
+  photos: [],
+}
+const VENUE = VENUE_ANNOUNCED ? CONFIRMED_VENUE : PENDING_VENUE
 const CEREMONY_VENUE = VENUE
 const RECEPTION_VENUE = VENUE
 
@@ -461,7 +474,7 @@ export const siteConfig = {
     backgroundPhotos: [] as string[],
     // Poster corners: small caps at the very top (left sits beside the monogram). "" hides one.
     topLeft: "100th Birthday",
-    topRight: "The Alexandria Events Place · Tuguegarao City",
+    topRight: VENUE_ANNOUNCED ? `${VENUE.name} · Tuguegarao City` : "Venue to Follow · Tuguegarao City",
     headline: "Save the Date",
     // {days} is replaced with the number of days left before the celebration
     countdownText: "{days} days until the celebration",
@@ -605,6 +618,14 @@ export const siteConfig = {
     description: "Everything you need to know for this blessed celebration.",
     decos: { ...SECTION_DECOS },
     venues: VENUE_CARDS,
+    // Shown on the venue card while VENUE_ANNOUNCED is false
+    venueAnnounced: VENUE_ANNOUNCED,
+    pendingVenue: {
+      label: "Venue",
+      title: "To Follow",
+      message: "We're finalizing the perfect place to celebrate a century of love. The venue will be announced soon — please check back on this invitation.",
+      note: "Tuguegarao City",
+    },
     labels: {
       arrival: "Arrival",
       at: "At",
@@ -986,8 +1007,9 @@ export const siteConfig = {
       },
       {
         question: "Where is the celebration?",
-        answer:
-          "{venueName}, {venueAddress}. You'll find the map, directions, and a QR code in [Event Details](#details).",
+        answer: VENUE_ANNOUNCED
+          ? "{venueName}, {venueAddress}. You'll find the map, directions, and a QR code in [Event Details](#details)."
+          : "The venue is to follow — we'll announce it here soon. Please check back on this invitation, or see [Event Details](#details) for updates.",
       },
       {
         question: "May I bring a plus one?",
