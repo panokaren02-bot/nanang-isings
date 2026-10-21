@@ -308,7 +308,7 @@ function ProposalQuestion({
         />
       ) : null}
 
-      {/* A SPECIAL PLACE / IN MY 18TH BIRTHDAY */}
+      {/* A SPECIAL PLACE / AT NANANG ISING'S 100TH BIRTHDAY */}
       {labels.headerEyebrow ? (
         <p className={`${cinzel.className} mt-6 text-[0.72rem] font-semibold uppercase tracking-[0.34em] sm:mt-8 sm:text-xs`} style={{ color: LABEL_GOLD }}>
           <T text={labels.headerEyebrow} />
@@ -328,7 +328,7 @@ function ProposalQuestion({
         </p>
       ) : null}
 
-      {/* Will you be one of my 18 Roses? */}
+      {/* Will you be <role>? */}
       <h2
         className={`${theSeasons.className} mt-4 text-[clamp(1.25rem,5.8vw,1.85rem)] leading-snug tracking-[0.04em] [overflow-wrap:anywhere]`}
         style={{ ...goldGradientText, textShadow: "none" }}

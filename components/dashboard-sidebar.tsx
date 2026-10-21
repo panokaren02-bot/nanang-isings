@@ -24,7 +24,7 @@ const playfair = Playfair_Display({ subsets: ["latin"], weight: ["500", "600"], 
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
-/** Whole calendar days from today (local) to the debut. Negative once it has passed. */
+/** Whole calendar days from today (local) to the celebration. Negative once it has passed. */
 function daysUntil(dateStr: string, now: Date): number | null {
   const wedding = new Date(normalizeWeddingDateString(dateStr))
   if (Number.isNaN(wedding.getTime())) return null
@@ -106,14 +106,14 @@ export function DashboardSidebar({
     },
     {
       id: "entourage" as const,
-      group: "Debut Entourage",
+      group: "Entourage",
       label: "Entourage & Sponsors",
       icon: Crown,
       badge: null,
     },
     {
       id: "proposals" as const,
-      group: "Debut Entourage",
+      group: "Entourage",
       label: "Proposal Invites",
       icon: Heart,
       badge: null,
@@ -125,7 +125,7 @@ export function DashboardSidebar({
   const weddingDay = siteConfig.ceremony?.day || ""
   const weddingTime = siteConfig.ceremony?.time || siteConfig.wedding.time || ""
   const daysLeft = now && weddingDate ? daysUntil(weddingDate, now) : null
-  const groups = ["Overview", "Guests", "Debut Entourage"] as const
+  const groups = ["Overview", "Guests", "Entourage"] as const
 
   const panel = (
     <>
@@ -150,7 +150,7 @@ export function DashboardSidebar({
 
         {/* Names */}
         <h2 className={`${playfair.className} relative mt-1.5 truncate px-6 text-[1.3rem] font-semibold leading-tight text-dash-ink lg:px-0`}>
-          {celebrant}<span className="font-medium italic text-dash-accent">&rsquo;s</span> Debut
+          {celebrant}<span className="font-medium italic text-dash-accent">&rsquo;s</span> 100th Birthday
         </h2>
 
         {/* Divider */}

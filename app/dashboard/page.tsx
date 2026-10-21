@@ -447,14 +447,14 @@ export default function DashboardPage() {
               </div>
               <div className="mb-2">
                 <span className="font-serif text-sm text-dash-accent">✦</span>
-                <span className="font-serif text-2xl font-bold text-dash-ink mx-2">Debut Invitation</span>
+                <span className="font-serif text-2xl font-bold text-dash-ink mx-2">100th Birthday Invitation</span>
                 <span className="font-serif text-sm text-dash-accent">✦</span>
               </div>
               <h1 className="text-2xl font-bold text-dash-ink mb-2">
                 Admin Dashboard
               </h1>
               <p className="text-dash-muted text-sm">
-                Enter the password to manage the debut celebration
+                Enter the password to manage the 100th birthday celebration
               </p>
             </div>
 
@@ -524,7 +524,7 @@ export default function DashboardPage() {
                 Welcome back
               </p>
               <h1 className={`${playfair.className} truncate text-[1.05rem] font-semibold leading-tight text-dash-ink sm:text-xl`}>
-                {celebrantName(siteConfig)}<span className="italic text-dash-accent">&rsquo;s</span> Debut
+                {celebrantName(siteConfig)}<span className="italic text-dash-accent">&rsquo;s</span> 100th Birthday
               </h1>
             </div>
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">

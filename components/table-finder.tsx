@@ -501,7 +501,7 @@ export function TableFinder() {
             className={`${cinzel.className} ${sectionType.label} font-semibold uppercase leading-normal tracking-[0.18em] min-[400px]:tracking-[0.28em] sm:tracking-[0.36em]`}
             style={{ color: GOLD, textShadow: TEXT_LIFT }}
           >
-            {celebrant}&rsquo;s Debut
+            {celebrant}&rsquo;s 100th Birthday
           </p>
 
           <h1

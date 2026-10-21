@@ -15,15 +15,15 @@ const OG_IMAGE_URL = `${canonicalUrl}${siteConfig.linkPreviewImage}`
 const OG_IMAGE_SIZE = siteConfig.linkPreviewImageSize
 
 const celebrant = siteConfig.celebrant.nickname
-const hashtag = siteConfig.snapShare.hashtag[0] ?? `#${celebrant}Turns18`
-const eventTitle = `${celebrant}'s Debut - ${siteConfig.event.theme}`
-const eventDescription = `Celebrate ${celebrant}'s 18th birthday debut on ${siteConfig.wedding.date} at ${siteConfig.ceremony.location}. ${siteConfig.event.theme} — RSVP, see the program, dress code, and everything you need for the night.`
+const hashtag = siteConfig.snapShare.hashtag[0] ?? `#${celebrant.replace(/\s+/g, "")}At100`
+const eventTitle = `${celebrant}'s ${siteConfig.event.theme}`
+const eventDescription = `Join us in celebrating ${celebrant}'s 100th birthday on ${siteConfig.wedding.date} at ${siteConfig.ceremony.location}. A century of love, faith, and family — RSVP, see the program, dress code, and everything you need for the celebration.`
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Event",
-  name: `${celebrant}'s Debut`,
-  startDate: "2027-02-20T15:45:00+08:00",
+  name: `${celebrant}'s 100th Birthday Celebration`,
+  startDate: "2026-11-21T17:00:00+08:00",
   eventStatus: "https://schema.org/EventScheduled",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   location: {
@@ -32,8 +32,8 @@ const jsonLd = {
     address: {
       "@type": "PostalAddress",
       streetAddress: siteConfig.ceremony.venue,
-      addressLocality: "Quezon City",
-      addressRegion: "Metro Manila",
+      addressLocality: "Tuguegarao City",
+      addressRegion: "Cagayan",
       addressCountry: "PH",
     },
   },
@@ -66,12 +66,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(canonicalUrl),
   title: {
     default: eventTitle,
-    template: `%s | ${celebrant}'s Debut`,
+    template: `%s | ${celebrant}'s 100th Birthday`,
   },
   description: eventDescription,
   keywords:
-    `${celebrant} debut, ${celebrant} 18th birthday, debut invitation, ${siteConfig.ceremony.location}, 18 roses, RSVP, ${hashtag}`,
-  applicationName: `${celebrant}'s Debut`,
+    `${celebrant} 100th birthday, ${celebrant} centennial, 100th birthday celebration, birthday invitation, ${siteConfig.ceremony.location}, RSVP, ${hashtag}`,
+  applicationName: `${celebrant}'s 100th Birthday`,
   authors: [{ name: celebrant }],
   creator: celebrant,
   publisher: celebrant,
@@ -98,10 +98,10 @@ export const metadata: Metadata = {
   },
   manifest: "/favicon_io/site.webmanifest",
   openGraph: {
-    title: `${celebrant}'s Debut | ${siteConfig.wedding.date}`,
+    title: `${celebrant}'s 100th Birthday | ${siteConfig.wedding.date}`,
     description: eventDescription,
     url: `${canonicalUrl}/`,
-    siteName: `${celebrant}'s Debut`,
+    siteName: `${celebrant}'s 100th Birthday`,
     locale: "en_PH",
     type: "website",
     images: [
@@ -111,14 +111,14 @@ export const metadata: Metadata = {
         width: OG_IMAGE_SIZE.width,
         height: OG_IMAGE_SIZE.height,
         type: OG_IMAGE_SIZE.type,
-        alt: `${celebrant}'s Debut Invitation - ${siteConfig.wedding.date}`,
+        alt: `${celebrant}'s 100th Birthday Invitation - ${siteConfig.wedding.date}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${celebrant}'s Debut Invitation`,
-    description: `You're invited to ${celebrant}'s debut on ${siteConfig.wedding.date}. RSVP and get all the details for the night! ${hashtag}`,
+    title: `${celebrant}'s 100th Birthday Invitation`,
+    description: `You're invited to celebrate ${celebrant}'s 100th birthday on ${siteConfig.wedding.date}. RSVP and get all the details for the celebration! ${hashtag}`,
     images: [OG_IMAGE_URL],
   },
   robots: {
@@ -133,7 +133,7 @@ export const metadata: Metadata = {
     },
   },
   appleWebApp: {
-    title: `${celebrant}'s Debut`,
+    title: `${celebrant}'s 100th Birthday`,
     statusBarStyle: "default",
     capable: true,
   },

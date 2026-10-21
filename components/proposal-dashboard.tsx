@@ -146,7 +146,7 @@ export function ProposalDashboard() {
 
     return `${greeting}
 
-${celebrant} has a personal debut invitation for you.
+${celebrant} has a personal 100th birthday invitation for you.
 
 She would love for you to please open your special link, read her message, and let her know if you can be ${roleSingular.match(/^One of/i) ? roleSingular.replace(/^One of My/i, "one of her") : `her ${roleSingular}`}?
 For your reply click the link, find the button at the digital invitation. Thanks!
@@ -637,7 +637,7 @@ ${celebrant}`
           payload={{
             text: getInviteMessage(),
             url: getProposalLink(selectedInviteRole.id, inviteeName.trim()),
-            subject: `${celebrantName(siteConfig)}'s Debut — A personal invitation for ${inviteeName.trim()}`,
+            subject: `${celebrantName(siteConfig)}'s 100th Birthday — A personal invitation for ${inviteeName.trim()}`,
           }}
         />
       )}

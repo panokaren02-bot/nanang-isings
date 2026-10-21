@@ -288,7 +288,7 @@ export function SnapShare() {
           onClick={() =>
             downloadCanvas(
               "snapshare-qr",
-              `${fileSlug}-debut-qr.png`,
+              `${fileSlug}-100th-birthday-qr.png`,
             )
           }
         >

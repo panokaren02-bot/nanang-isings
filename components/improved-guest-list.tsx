@@ -878,7 +878,7 @@ export const ImprovedGuestList: React.FC<ImprovedGuestListProps> = ({
                   )}
 
                   <div className="space-y-1">
-                    <FieldLabel htmlFor="guest-message">Message to the debutante</FieldLabel>
+                    <FieldLabel htmlFor="guest-message">Message to the celebrant</FieldLabel>
                     <textarea
                       id="guest-message"
                       rows={3}

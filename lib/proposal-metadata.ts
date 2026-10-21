@@ -18,13 +18,13 @@ export function buildProposalMetadata(options?: {
 
   const title = roleTitle
     ? `Will You Be ${roleTitle}?`
-    : "Will You Be Part of My Debut?"
+    : "Will You Be Part of My 100th Birthday?"
 
   const description = roleTitle
-    ? `${celebrant} would love for you to be ${/^One of My/i.test(roleTitle) ? roleTitle.replace(/^One of My/i, "one of her") : `her ${roleTitle}`} at her debut. Open this special invitation and share your response.`
-    : `${celebrant} has a special debut invitation for you. Open your link to view it and respond.`
+    ? `${celebrant} would love for you to be ${/^One of My/i.test(roleTitle) ? roleTitle.replace(/^One of My/i, "one of her") : `her ${roleTitle}`} at her 100th birthday celebration. Open this special invitation and share your response.`
+    : `${celebrant} has a special 100th birthday invitation for you. Open your link to view it and respond.`
 
-  const ogTitle = `${title} | ${celebrant}'s Debut`
+  const ogTitle = `${title} | ${celebrant}'s 100th Birthday`
 
   return {
     title,
@@ -36,7 +36,7 @@ export function buildProposalMetadata(options?: {
       title: ogTitle,
       description,
       url,
-      siteName: `${celebrant}'s Debut`,
+      siteName: `${celebrant}'s 100th Birthday`,
       locale: "en_PH",
       type: "website",
       images: [
@@ -47,8 +47,8 @@ export function buildProposalMetadata(options?: {
           height: siteConfig.linkPreviewImageSize.height,
           type: siteConfig.linkPreviewImageSize.type,
           alt: roleTitle
-            ? `Will you be ${roleTitle}? — ${celebrant}'s Debut`
-            : `${celebrant}'s Debut`,
+            ? `Will you be ${roleTitle}? — ${celebrant}'s 100th Birthday`
+            : `${celebrant}'s 100th Birthday`,
         },
       ],
     },

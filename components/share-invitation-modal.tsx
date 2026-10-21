@@ -76,7 +76,7 @@ export function ShareInvitationModal({ open, onClose, guest }: ShareInvitationMo
     const lines = [
       trimmed ? `Dear ${trimmed},` : "Hello,",
       "",
-      `You are warmly invited to ${celebrant}'s Debut!`,
+      `You are warmly invited to ${celebrant}'s 100th Birthday Celebration!`,
       "",
       `${date} | ${day} | ${time}`,
       venue,
@@ -136,7 +136,7 @@ export function ShareInvitationModal({ open, onClose, guest }: ShareInvitationMo
                 id="share-invitation-title"
                 className={`${playfair.className} mt-1 text-[1.45rem] font-semibold leading-tight text-dash-ink sm:text-2xl`}
               >
-                {trimmedName || `${celebrant}'s Debut`}
+                {trimmedName || `${celebrant}'s 100th Birthday`}
               </h2>
               <p className="mx-auto mt-1.5 max-w-xs text-[11px] leading-relaxed text-gray-500 sm:mx-0 sm:max-w-none sm:text-xs">
                 Send the invitation page — guests RSVP by searching their name.
@@ -313,14 +313,14 @@ export function ShareInvitationModal({ open, onClose, guest }: ShareInvitationMo
         open={showShareSheet}
         onClose={() => setShowShareSheet(false)}
         guestName={trimmedName}
-        roleTitle={`${celebrant}'s Debut invitation`}
+        roleTitle={`${celebrant}'s 100th Birthday invitation`}
         canNativeShare={typeof navigator !== "undefined" && typeof navigator.share === "function"}
         payload={{
           text: finalMessage,
           url,
           subject: trimmedName
-            ? `${celebrant}'s Debut — You're invited, ${trimmedName}!`
-            : `You're invited to ${celebrant}'s Debut!`,
+            ? `${celebrant}'s 100th Birthday — You're invited, ${trimmedName}!`
+            : `You're invited to ${celebrant}'s 100th Birthday!`,
           email: sameGuest ? guest?.email : undefined,
           phone: sameGuest ? guest?.contact : undefined,
         }}

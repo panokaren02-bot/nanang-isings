@@ -7,15 +7,15 @@ const celebrant = siteConfig.celebrant.nickname
 
 export const metadata: Metadata = {
   title: "Find Your Table",
-  description: `Search your name to find your table at ${celebrant}'s debut.`,
+  description: `Search your name to find your table at ${celebrant}'s 100th birthday.`,
   alternates: {
     canonical: canonicalUrl,
   },
   openGraph: {
-    title: `Find Your Table | ${celebrant}'s Debut`,
-    description: `Search your name to find your table at ${celebrant}'s debut.`,
+    title: `Find Your Table | ${celebrant}'s 100th Birthday`,
+    description: `Search your name to find your table at ${celebrant}'s 100th birthday.`,
     url: canonicalUrl,
-    siteName: `${celebrant}'s Debut`,
+    siteName: `${celebrant}'s 100th Birthday`,
     locale: "en_PH",
     type: "website",
     // A page-level openGraph replaces the root one, so the share image must be repeated here
