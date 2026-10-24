@@ -101,29 +101,27 @@ const EVENT_DATE = "November 20, 2026"
 const EVENT_DAY = "Friday"
 
 const TIMES = {
-  guestArrival: "5:00 PM", // ⚠ check — call time not given, using the event time
-  program: "5:00 PM", // Program proper — countdown target
+  guestArrival: "6:00 PM", // ⚠ check — call time not given, using the event time
+  program: "6:00 PM", // Program proper — countdown target
   end: "", // Add confirmed event end time
 }
 
 // ── Venue ───────────────────────────────────────────────────────────────────
 // false = venue not final yet: every section shows "To Follow" and the Event Details
 // card hides the address, map, QR code and photos. Flip to true once confirmed.
-const VENUE_ANNOUNCED = false
+const VENUE_ANNOUNCED = true
 
 const CONFIRMED_VENUE = {
-  name: "The Alexandria Events Place",
-  address: "Maribbay corner Luna Street, Ugac Highway, Tuguegarao City",
-  // ⚠ check — replace with the exact Google Maps pin when available
-  map: "https://maps.app.goo.gl/fWAdXe88eUVzfhND8",
+  name: "Hotel Casa Angela",
+  address: "Aguinaldo, Corner Taft St, Tuguegarao City, 3500 Cagayan, Philippines",
+  map: "https://maps.app.goo.gl/iDWPTGRC15CYqHjy8",
   // Step-by-step directions (Event Details card + FAQ)
   directions: [
-    "Head to Ugac Highway, Tuguegarao City.",
-    "The Alexandria Events Place is at the corner of Maribbay and Luna Street.",
+    "Head to Aguinaldo Street, Tuguegarao City.",
+    "Hotel Casa Angela is at the corner of Aguinaldo and Taft Street.",
   ],
   landmarks: [] as string[],
-  // Add confirmed venue photos when available
-  photos: ["/Details/venue-1.jpg", "/Details/venue-2.jpg", "/Details/venue-3.jpg"] as string[],
+  photos: ["/Details/venue (4).jpg", "/Details/venue (5).jpg"] as string[],
 }
 const PENDING_VENUE: typeof CONFIRMED_VENUE = {
   name: "To Follow",
@@ -151,12 +149,12 @@ const VENUE_CARDS = {
     badge: "The Celebration",
     sectionLabel: "Venue",
     showDate: true,
-    showArrival: true,
+    showArrival: false,
     // Time rows on the card, e.g. "Doors 7:00 PM | Program 7:30 PM"
     ceremonyLabel: "Program",
     receptionLabel: "Until",
     // true = also show the end time on the card
-    showReceptionTime: true,
+    showReceptionTime: false,
   },
   ceremony: {
     show: true,
@@ -660,13 +658,13 @@ export const siteConfig = {
       // Illustrated route map (wide) + street-level photo — "" hides; add when available
       mapImage: {
         src: "",
-        alt: "Route map to The Alexandria Events Place, Ugac Highway, Tuguegarao City",
+        alt: "Route map to Hotel Casa Angela, Tuguegarao City",
         caption: "Route Map",
       },
       streetImage: {
         src: "",
-        alt: "Street view of The Alexandria Events Place, Tuguegarao City",
-        caption: "The Alexandria Events Place",
+        alt: "Street view of Hotel Casa Angela, Tuguegarao City",
+        caption: "Hotel Casa Angela",
       },
       enlargeHint: "Tap to enlarge",
     },
@@ -743,14 +741,14 @@ export const siteConfig = {
     //   icon:     "sun" | "moon" | "crown" | "rose" | "gift" | "toast" | "candle" |
     //             "music" | "video" | "dinner" | "arrival" | "dance" | "departure" | …
     //   description: optional extra line ("" to hide)
-    // ⚠ check — only the 5:00 PM start was given; confirm the program and times with the family
+    // ⚠ check — only the 6:00 PM start was given; confirm the program and times with the family
     events: [
       {
         show: true,
-        time: "5:00 PM",
+        time: TIMES.program,
         title: "Arrival of Guests",
         description: "",
-        location: "",
+        location: "{ceremony}",
         image: "/debut-timeline/message.png",
         icon: "arrival" as TimelineIconName,
       },

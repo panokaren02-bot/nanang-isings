@@ -174,7 +174,7 @@ export function GuestInformation() {
                     <p className={`${cormorant.className} text-xs sm:text-sm md:text-base leading-relaxed`} style={{ color: GUEST_MEDIUM }}>
                       The reception will follow at{" "}
                       <span className="font-semibold" style={{ color: GUEST_DARK }}>
-                        {siteConfig.reception.time ?? "5:00 PM"}
+                        {siteConfig.reception.time ?? "6:00 PM"}
                       </span>
                       .
                     </p>
