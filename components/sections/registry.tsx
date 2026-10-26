@@ -226,6 +226,35 @@ export function Registry() {
               ))}
             </div>
 
+            {/* Suggested gifts */}
+            {content.priorities.length > 0 && (
+              <motion.div variants={itemVariants} className="relative mt-8 sm:mt-9">
+                {content.prioritiesTitle ? (
+                  <p
+                    className={`${cinzel.className} text-[0.65rem] font-semibold uppercase tracking-[0.22em] sm:text-xs`}
+                    style={{ color: c.eyebrow }}
+                  >
+                    {content.prioritiesTitle}
+                  </p>
+                ) : null}
+                <ul
+                  className={`${cormorant.className} mx-auto mt-4 max-w-[26rem] space-y-2.5 rounded-2xl px-5 py-5 text-left text-[1.0625rem] font-semibold leading-snug sm:px-7 sm:text-[1.15rem]`}
+                  style={{
+                    color: c.body,
+                    background: c.accountCard,
+                    border: `1px solid ${c.glow}`,
+                  }}
+                >
+                  {content.priorities.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rotate-45" style={{ background: c.eyebrow }} aria-hidden />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
             {/* Optional e-gift accounts — tap a tab to switch */}
             {active && (
               <motion.div

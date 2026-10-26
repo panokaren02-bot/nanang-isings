@@ -1039,7 +1039,15 @@ export const siteConfig = {
     description: "Your presence is the best gift Nanang Ising could ask for.",
     paragraphs: [
       "Having you with us on this 100th birthday is already a precious blessing. Your love, prayers, and presence mean the most.",
+      "For those who wish to express their love or share their stories with Nanang, you may do so with a simple message as you give your treasures to our beloved Nanang Ising.",
     ],
+    // Suggested gifts list shown under the letter ("" title / empty list hides it)
+    prioritiesTitle: "We can prioritize",
+    priorities: [
+      "Ensure Milk in vanilla flavor",
+      "Caress large diapers",
+      "Monetary fund for Nanang Ising’s medication and necessities",
+    ] as string[],
     thankYou: "", // "" hides the line
     signOff: "With a grateful heart,",
     signature: "The Family", // "" falls back to the celebrant's nickname

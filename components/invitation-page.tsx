@@ -286,7 +286,7 @@ export function InvitationPage({ sponsorsList, showEntourage = true }: Invitatio
               <BookOfGuests />
               <Registry />
               <FAQ />
-              <WeddingPlaylist /> 
+              {/* <WeddingPlaylist />  */}
               <SnapShare />
               <SeeYouThere />
               <Footer />
