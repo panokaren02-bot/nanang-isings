@@ -583,7 +583,7 @@ export const siteConfig = {
         layout: "image-left" as const,
         image: "/mobile-background/nanang-5.png",
         paragraphs: [
-          "A century of stories, lessons, and laughter. On November 21, 2026, come in your Best Sunday Outfit and celebrate this blessed milestone with us.",
+          "A century of stories, lessons, and laughter. On Nov 20, 2026, come in your Best Sunday Outfit and celebrate this blessed milestone with us.",
           "With love and gratitude, The Family",
         ],
       },
