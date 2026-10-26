@@ -641,6 +641,9 @@ export const siteConfig = {
       colorGuideTitle: "Color Guide",
       colorGuideNote:
         "There is no set palette — simply come in your Best Sunday Outfit.",
+      // Shown under the attire card ("" hides it)
+      note:
+        "To maintain the elegance of the occasion, guests are kindly requested to avoid wearing shorts, mini skirts, tattered jeans, tank tops, and slippers.",
       // Order and visibility come from ATTIRE.show (skips blanks, typos and repeats)
       groups: ATTIRE.show
         .filter((id, i, list) => ["sponsors", "entourage", "guests"].includes(id) && list.indexOf(id) === i)
@@ -1045,7 +1048,7 @@ export const siteConfig = {
     prioritiesTitle: "We can prioritize",
     priorities: [
       "Ensure Milk in vanilla flavor",
-      "Caress large diapers",
+      "Caress basic adult tape diaper (Large)",
       "Monetary fund for Nanang Ising’s medication and necessities",
     ] as string[],
     thankYou: "", // "" hides the line

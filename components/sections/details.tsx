@@ -1118,6 +1118,17 @@ export function Details() {
             })}
           </div>
 
+          {attire.note ? (
+            <div
+              className="mx-auto mb-6 w-full max-w-3xl rounded-2xl border px-5 py-4 text-center sm:mb-8 sm:px-8 sm:py-5"
+              style={softPanelStyle}
+            >
+              <p className={`font-goudy-italic ${ct.body} leading-relaxed`} style={{ color: C.body }}>
+                {attire.note}
+              </p>
+            </div>
+          ) : null}
+
           {/* Gentle Reminders */}
           <motion.div
             className="relative mx-auto mt-10 max-w-2xl sm:mt-12"
