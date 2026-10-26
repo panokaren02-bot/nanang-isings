@@ -263,7 +263,7 @@ const SITE_URL = "https://nanang-isings-100th-birthday.weddinginvitationrsvp.com
 // Image shown when the link is shared (Facebook, Messenger, Viber, X, …).
 // Messenger is strict: use a JPG exactly 1200×630, under ~300 KB. When you replace it,
 // change the file name (or bump ?v=) so Facebook fetches the new one instead of its cache.
-const LINK_PREVIEW_IMAGE = "/Details/LinkPreview.png?v=2"
+const LINK_PREVIEW_IMAGE = "/Details/link-preview-1200x630.jpg?v=3"
 const LINK_PREVIEW_IMAGE_SIZE = { width: 1200, height: 630, type: "image/jpeg" }
 
 // Site address with env override applied and no trailing slash — no need to edit
